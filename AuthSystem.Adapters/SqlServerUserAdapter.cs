@@ -2,7 +2,6 @@
 using AuthSystem.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
@@ -19,7 +18,7 @@ namespace AuthSystem.Adapters
             throw new NotImplementedException();
         }
 
-        public Task<(bool, User)> ReadAsync(Guid id)
+        public Task<User?> ReadAsync(Guid id)
         {
             throw new NotImplementedException();
         }
