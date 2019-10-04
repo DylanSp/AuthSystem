@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\AuthSystem.Data\AuthSystem.Data.csproj" />
+    <ProjectReference Include="..\AuthSystem.Interfaces\AuthSystem.Interfaces.csproj" />
+  </ItemGroup>
+
 </Project>
