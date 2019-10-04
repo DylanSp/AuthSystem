@@ -2,7 +2,8 @@
 
 namespace AuthSystem.Interfaces
 {
-    public class Class1
+    public interface IEntity
     {
+        Guid Id { get; set; }
     }
 }
