@@ -1,31 +1,53 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces;
+using Dapper;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
 {
     public class SqlServerUserAdapter : IDataAdapter<User>
     {
-        public Task DeleteAsync(Guid id)
+        private SqlConnection Connection { get; }
+
+        public SqlServerUserAdapter(SqlConnection connection)
         {
-            throw new NotImplementedException();
+            Connection = connection;
         }
 
-        public Task<IEnumerable<User>> ReadAllAsync()
+        public async Task DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            await Connection.ExecuteAsync("DELETE FROM Users WHERE Id = @Id", new { Id = id });
         }
 
-        public Task<User?> ReadAsync(Guid id)
+        public async Task<IEnumerable<User>> ReadAllAsync()
         {
-            throw new NotImplementedException();
+            return await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users");
         }
 
-        public Task SaveAsync(User newData)
+        public async Task<User?> ReadAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = id });
+            if (users.Count() > 0)
+            {
+                return users.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task SaveAsync(User newData)
+        {
+            await Connection.ExecuteAsync(@"IF EXISTS (SELECT * FROM Users WHERE Id = @Id
+                                                UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id
+                                            ELSE
+                                                INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
+                                          new { newData.Id, newData.Username, Hash = newData.Base64PasswordHash, Salt = newData.Base64Salt });
         }
     }
 }
