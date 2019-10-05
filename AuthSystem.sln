@@ -3,15 +3,17 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29326.143
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem", "AuthSystem\AuthSystem.csproj", "{BEC2FED3-FD05-4288-8955-83D38EA3DC98}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSystem", "AuthSystem\AuthSystem.csproj", "{BEC2FED3-FD05-4288-8955-83D38EA3DC98}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem.Interfaces", "AuthSystem.Interfaces\AuthSystem.Interfaces.csproj", "{B40DDD08-D54B-46E0-ADB4-02157099AB94}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSystem.Interfaces", "AuthSystem.Interfaces\AuthSystem.Interfaces.csproj", "{B40DDD08-D54B-46E0-ADB4-02157099AB94}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem.Data", "AuthSystem.Data\AuthSystem.Data.csproj", "{E6AAE925-333C-4275-9304-4F3A3A7B1907}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSystem.Data", "AuthSystem.Data\AuthSystem.Data.csproj", "{E6AAE925-333C-4275-9304-4F3A3A7B1907}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem.Adapters", "AuthSystem.Adapters\AuthSystem.Adapters.csproj", "{DDEA0EA5-546A-4D3A-99A4-C577481EC35F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSystem.Adapters", "AuthSystem.Adapters\AuthSystem.Adapters.csproj", "{DDEA0EA5-546A-4D3A-99A4-C577481EC35F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem.Managers", "AuthSystem.Managers\AuthSystem.Managers.csproj", "{1D16471E-930A-4A61-B25A-BC37A42A2B37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AuthSystem.Managers", "AuthSystem.Managers\AuthSystem.Managers.csproj", "{1D16471E-930A-4A61-B25A-BC37A42A2B37}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthSystem.Tests", "AuthSystem.Tests\AuthSystem.Tests.csproj", "{665D7ADB-E904-499A-965C-940FA73EE7AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -39,6 +41,10 @@ Global
 		{1D16471E-930A-4A61-B25A-BC37A42A2B37}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1D16471E-930A-4A61-B25A-BC37A42A2B37}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1D16471E-930A-4A61-B25A-BC37A42A2B37}.Release|Any CPU.Build.0 = Release|Any CPU
+		{665D7ADB-E904-499A-965C-940FA73EE7AF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{665D7ADB-E904-499A-965C-940FA73EE7AF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{665D7ADB-E904-499A-965C-940FA73EE7AF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{665D7ADB-E904-499A-965C-940FA73EE7AF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

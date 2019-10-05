@@ -43,7 +43,7 @@ namespace AuthSystem.Adapters
 
         public async Task SaveAsync(User newData)
         {
-            await Connection.ExecuteAsync(@"IF EXISTS (SELECT * FROM Users WHERE Id = @Id
+            await Connection.ExecuteAsync(@"IF EXISTS (SELECT * FROM Users WHERE Id = @Id)
                                                 UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id
                                             ELSE
                                                 INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
