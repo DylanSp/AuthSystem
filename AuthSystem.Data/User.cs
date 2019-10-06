@@ -1,9 +1,8 @@
-﻿using AuthSystem.Interfaces;
-using System;
+﻿using System;
 
 namespace AuthSystem.Data
 {
-    public struct User : IEntity
+    public struct User
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
@@ -12,7 +11,7 @@ namespace AuthSystem.Data
 
         public User(string username, string passwordHash, string salt)
         {
-            Id = Guid.NewGuid();
+            Id = Guid.NewGuid();    // TODO - make this ctor parameter, enforce NewGuid on creation in manager
             Username = username;
             Base64PasswordHash = passwordHash;
             Base64Salt = salt;

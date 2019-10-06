@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
 {
-    public class SqlServerUserAdapter : IDataAdapter<User>
+    public class SqlServerUserAdapter : IUserAdapter
     {
         private SqlConnection Connection { get; }
 
@@ -17,6 +17,19 @@ namespace AuthSystem.Adapters
         {
             Connection = connection;
         }
+
+        public async Task CreateAsync(User newUser)
+        {
+            // how to handle case where user already exists?
+        }
+
+        public async Task UpdateAsync(User newUserData)
+        {
+            // how to handle case where user doesn't exist?
+        }
+
+
+        #region old stuff
 
         public async Task DeleteAsync(Guid id)
         {
@@ -49,5 +62,7 @@ namespace AuthSystem.Adapters
                                                 INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
                                           new { newData.Id, newData.Username, Hash = newData.Base64PasswordHash, Salt = newData.Base64Salt });
         }
+
+        #endregion
     }
 }
