@@ -1,12 +1,9 @@
 ﻿using AuthSystem.Adapters;
 using AuthSystem.Data;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Configuration.Json;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Tests.Adapters
@@ -32,7 +29,7 @@ namespace AuthSystem.Tests.Adapters
             {
                 var adapter = new SqlServerUserAdapter(connection);
 
-                var savedUser = new User("someUser", "someHash", "someSalt");
+                var savedUser = new User(Guid.NewGuid(), "someUsername", new HashedPassword("someHash", "someSalt"));
 
                 // Act
                 await adapter.SaveAsync(savedUser);

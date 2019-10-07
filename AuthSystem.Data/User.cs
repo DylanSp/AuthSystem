@@ -6,15 +6,13 @@ namespace AuthSystem.Data
     {
         public Guid Id { get; set; }
         public string Username { get; set; }
-        public string Base64PasswordHash { get; set; }
-        public string Base64Salt { get; set; }
+        public HashedPassword HashedPassword { get; set; }
 
-        public User(string username, string passwordHash, string salt)
+        public User(Guid id, string username, HashedPassword hashedPassword)
         {
-            Id = Guid.NewGuid();    // TODO - make this ctor parameter, enforce NewGuid on creation in manager
+            Id = id;
             Username = username;
-            Base64PasswordHash = passwordHash;
-            Base64Salt = salt;
+            HashedPassword = hashedPassword;
         }
     }
 }

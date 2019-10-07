@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
 {
+    // TODO - rework this, maybe put password info in separate table?
     public class SqlServerUserAdapter : IUserAdapter
     {
         private SqlConnection Connection { get; }
@@ -27,8 +28,8 @@ namespace AuthSystem.Adapters
                 {
                     Id = newUser.Id,
                     Username = newUser.Username,
-                    Hash = newUser.Base64PasswordHash,
-                    Salt = newUser.Base64Salt
+                    Hash = newUser.HashedPassword.Base64PasswordHash,
+                    Salt = newUser.HashedPassword.Base64Salt
                 });
         }
 
@@ -38,8 +39,10 @@ namespace AuthSystem.Adapters
                 "UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id",
                 new
                 {
-                    Username = newUserData.Username, Hash = newUserData.Base64PasswordHash,
-                    Salt = newUserData.Base64Salt, Id = newUserData.Id
+                    Username = newUserData.Username,
+                    Hash = newUserData.HashedPassword.Base64PasswordHash,
+                    Salt = newUserData.HashedPassword.Base64Salt,
+                    Id = newUserData.Id
                 });
         }
 
@@ -89,7 +92,7 @@ namespace AuthSystem.Adapters
                                                 UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id
                                             ELSE
                                                 INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
-                                          new { newData.Id, newData.Username, Hash = newData.Base64PasswordHash, Salt = newData.Base64Salt });
+                                          new { newData.Id, newData.Username, Hash = newData.HashedPassword.Base64PasswordHash, Salt = newData.HashedPassword.Base64Salt });
         }
 
         #endregion

@@ -44,8 +44,10 @@ namespace AuthSystem.Managers
             {
                 Id = id,
                 Username = username,
-                Base64PasswordHash = "",
-                Base64Salt = "",
+                HashedPassword = new HashedPassword
+                {
+
+                },
             };
 
             await Adapter.CreateAsync(user);
