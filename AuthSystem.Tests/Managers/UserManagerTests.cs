@@ -16,6 +16,73 @@ namespace AuthSystem.Tests.Managers
     {
         [TestMethod]
         [TestCategory("UnitTest")]
+        public async Task ValidatePassword_ForNonexistentUser_ReturnsFalse()
+        {
+            // Arrange
+            var username = "Alice";
+            var adapter = Substitute.For<IUserAdapter>();
+            adapter.GetUserByUsernameAsync(username).Returns(null as User?);
+            var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
+
+            // Act
+            var result = await manager.ValidatePasswordAsync(username, "somePass");
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task ValidatePassword_WithWrongPassword_ReturnsFalse()
+        {
+            // Arrange
+            var username = "Alice";
+            var adapter = Substitute.For<IUserAdapter>();
+            adapter.GetUserByUsernameAsync(username).Returns(new User
+            {
+                Username = username,
+                HashedPassword = new HashedPassword(),
+            });
+
+            var passwordService = Substitute.For<IPasswordService>();
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(false);
+            
+            var manager = new UserManager(adapter, passwordService);
+
+            // Act
+            var result = await manager.ValidatePasswordAsync(username, "somePass");
+
+            // Assert
+            Assert.IsFalse(result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task ValidatePassword_WithCorrectPassword_ReturnsTrue()
+        {
+            // Arrange
+            var username = "Alice";
+            var adapter = Substitute.For<IUserAdapter>();
+            adapter.GetUserByUsernameAsync(username).Returns(new User
+            {
+                Username = username,
+                HashedPassword = new HashedPassword(),
+            });
+
+            var passwordService = Substitute.For<IPasswordService>();
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(true);
+
+            var manager = new UserManager(adapter, passwordService);
+
+            // Act
+            var result = await manager.ValidatePasswordAsync(username, "somePass");
+
+            // Assert
+            Assert.IsTrue(result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task CreateUser_WithAlreadyExistingName_ReturnsAppropriateFailure()
         {
             // Arrange

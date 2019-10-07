@@ -19,7 +19,13 @@ namespace AuthSystem.Managers
 
         public async Task<bool> ValidatePasswordAsync(string username, string password)
         {
-            throw new NotImplementedException();
+            var user = await Adapter.GetUserByUsernameAsync(username);
+            if (!user.HasValue)
+            {
+                return false;
+            }
+
+            return PasswordService.CheckIfPasswordMatchesHash(password, user.Value.HashedPassword);
         }
 
         public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password)
