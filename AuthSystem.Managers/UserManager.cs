@@ -7,7 +7,6 @@ namespace AuthSystem.Managers
 {
     public enum CreateUserResults
     {
-        UserIdAlreadyExists,
         UsernameAlreadyExists,
         UserCreated,
     }
@@ -28,9 +27,30 @@ namespace AuthSystem.Managers
             Adapter = adapter;
         }
 
-        public async Task CreateUser(User user)
+        public async Task<CreateUserResults> CreateUserAsync(string username, string password)
         {
-            // need to check that neither user ID nor username already exist
+            Guid id;
+            do
+            {
+                id = Guid.NewGuid();
+            } while (!await Adapter.IsUserIdUniqueAsync(id));
+
+            if (!await Adapter.IsUsernameUniqueAsync(username))
+            {
+                return CreateUserResults.UsernameAlreadyExists;
+            }
+
+            var user = new User
+            {
+                Id = id,
+                Username = username,
+                Base64PasswordHash = "",
+                Base64Salt = "",
+            };
+
+            await Adapter.CreateAsync(user);
+
+            return CreateUserResults.UserCreated;
         }
 
         public async Task ChangePassword(Guid userId, string oldPassword, string newPassword)
