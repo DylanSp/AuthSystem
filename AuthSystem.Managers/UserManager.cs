@@ -5,26 +5,15 @@ using System.Threading.Tasks;
 
 namespace AuthSystem.Managers
 {
-    public enum CreateUserResults
-    {
-        UsernameAlreadyExists,
-        UserCreated,
-    }
-
-    public enum ChangePasswordResults
-    {
-        UserNotPresent,
-        PasswordIncorrect,
-        PasswordChanged,
-    }
-
-    public class UserManager
+    public class UserManager : IUserManager
     {
         private IUserAdapter Adapter { get; }
+        private IPasswordService PasswordService { get; }
 
-        public UserManager(IUserAdapter adapter)
+        public UserManager(IUserAdapter adapter, IPasswordService passwordService)
         {
             Adapter = adapter;
+            PasswordService = passwordService;
         }
 
         public async Task<CreateUserResults> CreateUserAsync(string username, string password)
@@ -44,10 +33,7 @@ namespace AuthSystem.Managers
             {
                 Id = id,
                 Username = username,
-                HashedPassword = new HashedPassword
-                {
-
-                },
+                HashedPassword = PasswordService.GeneratePasswordHashAndSalt(password),
             };
 
             await Adapter.CreateAsync(user);
@@ -55,7 +41,7 @@ namespace AuthSystem.Managers
             return CreateUserResults.UserCreated;
         }
 
-        public async Task ChangePassword(Guid userId, string oldPassword, string newPassword)
+        public async Task<ChangePasswordResults> ChangePassword(Guid userId, string oldPassword, string newPassword)
         {
             throw new NotImplementedException();
             // read user - if null, return USER_NOT_PRESENT

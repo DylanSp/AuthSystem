@@ -1,9 +1,10 @@
 ﻿using AuthSystem.Data;
+using AuthSystem.Interfaces;
 using System;
 
 namespace AuthSystem.Services
 {
-    public class PasswordService
+    public class PasswordService : IPasswordService
     {
         public HashedPassword GeneratePasswordHashAndSalt(string password)
         {
