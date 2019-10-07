@@ -18,14 +18,29 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
+        // allows exceptions to propagate upwards
         public async Task CreateAsync(User newUser)
         {
-            // how to handle case where user already exists?
+            await Connection.ExecuteAsync(
+                "INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
+                new
+                {
+                    Id = newUser.Id,
+                    Username = newUser.Username,
+                    Hash = newUser.Base64PasswordHash,
+                    Salt = newUser.Base64Salt
+                });
         }
 
-        public async Task UpdateAsync(User newUserData)
+        public async Task<int> UpdateAsync(User newUserData)
         {
-            // how to handle case where user doesn't exist?
+            return await Connection.ExecuteAsync(
+                "UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id",
+                new
+                {
+                    Username = newUserData.Username, Hash = newUserData.Base64PasswordHash,
+                    Salt = newUserData.Base64Salt, Id = newUserData.Id
+                });
         }
 
 

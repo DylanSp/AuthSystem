@@ -6,6 +6,6 @@ namespace AuthSystem.Interfaces
     public interface IUserAdapter
     {
         Task CreateAsync(User newUser);
-        Task UpdateAsync(User newUserData);
+        Task<int> UpdateAsync(User newUserData);
     }
 }
