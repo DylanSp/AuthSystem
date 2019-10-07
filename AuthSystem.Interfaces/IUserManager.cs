@@ -10,7 +10,7 @@ namespace AuthSystem.Interfaces
     public class UserCreated : ValueOf<Guid, UserCreated> { }
 
 
-    public enum ChangePasswordResults
+    public enum ChangePasswordResult
     {
         UserNotPresent,
         PasswordIncorrect,
@@ -21,6 +21,6 @@ namespace AuthSystem.Interfaces
     {
         Task<bool> ValidatePasswordAsync(string username, string password);
         Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password);
-        Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
+        Task<ChangePasswordResult> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
     }
 }

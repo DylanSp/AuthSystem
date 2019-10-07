@@ -137,7 +137,7 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
 
             // Assert
-            Assert.AreEqual(ChangePasswordResults.UserNotPresent, result);
+            Assert.AreEqual(ChangePasswordResult.UserNotPresent, result);
         }
 
         [TestMethod]
@@ -160,7 +160,7 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
 
             // Assert
-            Assert.AreEqual(ChangePasswordResults.PasswordIncorrect, result);
+            Assert.AreEqual(ChangePasswordResult.PasswordIncorrect, result);
         }
 
         [TestMethod]
@@ -182,7 +182,7 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
 
             // Assert
-            Assert.AreEqual(ChangePasswordResults.PasswordChanged, result);
+            Assert.AreEqual(ChangePasswordResult.PasswordChanged, result);
         }
     }
 }

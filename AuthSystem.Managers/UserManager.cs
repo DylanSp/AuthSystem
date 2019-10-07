@@ -53,19 +53,19 @@ namespace AuthSystem.Managers
             return UserCreated.From(id);
         }
 
-        public async Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
+        public async Task<ChangePasswordResult> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
         {
             var existingUser = await Adapter.GetUserByIdAsync(userId);
             if (!existingUser.HasValue)
             {
-                return ChangePasswordResults.UserNotPresent;
+                return ChangePasswordResult.UserNotPresent;
             }
 
             var isOldPasswordCorrect =
                 PasswordService.CheckIfPasswordMatchesHash(oldPassword, existingUser.Value.HashedPassword);
             if (!isOldPasswordCorrect)
             {
-                return ChangePasswordResults.PasswordIncorrect;
+                return ChangePasswordResult.PasswordIncorrect;
             }
 
             var newPasswordHash = PasswordService.GeneratePasswordHashAndSalt(newPassword);
@@ -79,7 +79,7 @@ namespace AuthSystem.Managers
             // TODO - check if return == 1, throw error if not?
             await Adapter.UpdateAsync(newUserData);
 
-            return ChangePasswordResults.PasswordChanged;
+            return ChangePasswordResult.PasswordChanged;
         }
 
     }
