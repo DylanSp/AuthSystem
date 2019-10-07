@@ -19,6 +19,19 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
+        public async Task<User?> ReadUserAsync(Guid userId)
+        {
+            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = userId });
+            if (users.Count() > 0)
+            {
+                return users.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         // allows exceptions to propagate upwards
         public async Task CreateAsync(User newUser)
         {
@@ -71,28 +84,6 @@ namespace AuthSystem.Adapters
         public async Task<IEnumerable<User>> ReadAllAsync()
         {
             return await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users");
-        }
-
-        public async Task<User?> ReadAsync(Guid id)
-        {
-            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = id });
-            if (users.Count() > 0)
-            {
-                return users.First();
-            }
-            else
-            {
-                return null;
-            }
-        }
-
-        public async Task SaveAsync(User newData)
-        {
-            await Connection.ExecuteAsync(@"IF EXISTS (SELECT * FROM Users WHERE Id = @Id)
-                                                UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id
-                                            ELSE
-                                                INSERT Users (Id, Username, Base64PasswordHash, Base64Salt) VALUES (@Id, @Username, @Hash, @Salt)",
-                                          new { newData.Id, newData.Username, Hash = newData.HashedPassword.Base64PasswordHash, Salt = newData.HashedPassword.Base64Salt });
         }
 
         #endregion

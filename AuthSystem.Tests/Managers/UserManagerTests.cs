@@ -22,7 +22,8 @@ namespace AuthSystem.Tests.Managers
             var adapter = Substitute.For<IUserAdapter>();
             adapter.IsUserIdUniqueAsync(Arg.Any<Guid>()).Returns(true);
             adapter.IsUsernameUniqueAsync(username).Returns(false);
-            var manager = new UserManager(adapter);
+            var passwordService = Substitute.For<IPasswordService>();
+            var manager = new UserManager(adapter, passwordService);
 
             // Act
             var result = await manager.CreateUserAsync(username, "");
@@ -40,7 +41,8 @@ namespace AuthSystem.Tests.Managers
             var adapter = Substitute.For<IUserAdapter>();
             adapter.IsUserIdUniqueAsync(Arg.Any<Guid>()).Returns(true);
             adapter.IsUsernameUniqueAsync(username).Returns(true);
-            var manager = new UserManager(adapter);
+            var passwordService = Substitute.For<IPasswordService>();
+            var manager = new UserManager(adapter, passwordService);
 
             // Act
             var result = await manager.CreateUserAsync(username, "");

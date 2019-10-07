@@ -41,12 +41,33 @@ namespace AuthSystem.Managers
             return CreateUserResults.UserCreated;
         }
 
-        public async Task<ChangePasswordResults> ChangePassword(Guid userId, string oldPassword, string newPassword)
+        public async Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
         {
-            throw new NotImplementedException();
-            // read user - if null, return USER_NOT_PRESENT
-            // verify oldPassword against hash/salt - if fail, return PASSWORD_NOT_CORRECT
-            // generate new salt, calculate hash, save new user, return PASSWORD_CHANGED
+            var existingUser = await Adapter.ReadUserAsync(userId);
+            if (!existingUser.HasValue)
+            {
+                return ChangePasswordResults.UserNotPresent;
+            }
+
+            var isOldPasswordCorrect =
+                PasswordService.CheckIfPasswordMatchesHash(oldPassword, existingUser.Value.HashedPassword);
+            if (!isOldPasswordCorrect)
+            {
+                return ChangePasswordResults.PasswordIncorrect;
+            }
+
+            var newPasswordHash = PasswordService.GeneratePasswordHashAndSalt(newPassword);
+            var newUserData = new User
+            {
+                Id = existingUser.Value.Id,
+                Username = existingUser.Value.Username,
+                HashedPassword = newPasswordHash,
+            };
+            
+            // TODO - check if return == 1, throw error if not?
+            await Adapter.UpdateAsync(newUserData);
+
+            return ChangePasswordResults.PasswordChanged;
         }
 
     }

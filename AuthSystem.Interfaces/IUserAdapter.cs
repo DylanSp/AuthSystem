@@ -6,6 +6,7 @@ namespace AuthSystem.Interfaces
 {
     public interface IUserAdapter
     {
+        Task<User?> ReadUserAsync(Guid userId);
         Task CreateAsync(User newUser);
         Task<int> UpdateAsync(User newUserData);
         Task<bool> IsUserIdUniqueAsync(Guid userId);
