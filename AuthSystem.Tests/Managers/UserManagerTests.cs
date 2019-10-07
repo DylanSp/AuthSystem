@@ -29,7 +29,10 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, "");
 
             // Assert
-            Assert.AreEqual(CreateUserResults.UsernameAlreadyExists, result);
+            result.Match(
+                usernameAlreadyExists => true,
+                userCreated => throw new Exception("test failed")
+            );
         }
 
         [TestMethod]
@@ -47,7 +50,10 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, "");
 
             // Assert
-            Assert.AreEqual(CreateUserResults.UserCreated, result);
+            result.Match(
+                usernameAlreadyExists => throw new Exception("test failed"),
+                userCreated => true
+            );
         }
 
         [TestMethod]

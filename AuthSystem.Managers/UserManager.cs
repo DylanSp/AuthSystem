@@ -1,5 +1,6 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces;
+using OneOf;
 using System;
 using System.Threading.Tasks;
 
@@ -21,7 +22,7 @@ namespace AuthSystem.Managers
             throw new NotImplementedException();
         }
 
-        public async Task<CreateUserResults> CreateUserAsync(string username, string password)
+        public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password)
         {
             Guid id;
             do
@@ -31,7 +32,7 @@ namespace AuthSystem.Managers
 
             if (!await Adapter.IsUsernameUniqueAsync(username))
             {
-                return CreateUserResults.UsernameAlreadyExists;
+                return new UsernameAlreadyExists();
             }
 
             var user = new User
@@ -43,7 +44,7 @@ namespace AuthSystem.Managers
 
             await Adapter.CreateAsync(user);
 
-            return CreateUserResults.UserCreated;
+            return UserCreated.From(id);
         }
 
         public async Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)

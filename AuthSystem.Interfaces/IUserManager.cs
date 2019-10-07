@@ -1,13 +1,14 @@
-﻿using System;
+﻿using OneOf;
+using System;
 using System.Threading.Tasks;
+using ValueOf;
 
 namespace AuthSystem.Interfaces
 {
-    public enum CreateUserResults
-    {
-        UsernameAlreadyExists,
-        UserCreated,
-    }
+    // CreateUserAsync() return types
+    public class UsernameAlreadyExists { }
+    public class UserCreated : ValueOf<Guid, UserCreated> { }
+
 
     public enum ChangePasswordResults
     {
@@ -21,7 +22,7 @@ namespace AuthSystem.Interfaces
         Task<bool> ValidatePasswordAsync(string username, string password);
 
         // TODO - return user ID when successful
-        Task<CreateUserResults> CreateUserAsync(string username, string password);
+        Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password);
         Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
     }
 }
