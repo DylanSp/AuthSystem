@@ -43,6 +43,20 @@ namespace AuthSystem.Adapters
                 });
         }
 
+        public async Task<bool> IsUserIdUniqueAsync(Guid userId)
+        {
+            var usersWithId = await Connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Users WHERE Id = @Id", new { Id = userId });
+            return usersWithId == 0;
+        }
+
+        public async Task<bool> IsUsernameUniqueAsync(string username)
+        {
+            var usersWithUsername =
+                await Connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Users WHERE Username = @Username",
+                    new {Username = username});
+            return usersWithUsername == 0;
+        }
+
 
         #region old stuff
 
