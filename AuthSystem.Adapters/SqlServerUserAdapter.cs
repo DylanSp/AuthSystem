@@ -19,9 +19,22 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
-        public async Task<User?> ReadUserAsync(Guid userId)
+        public async Task<User?> GetUserByIdAsync(Guid userId)
         {
             var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = userId });
+            if (users.Count() > 0)
+            {
+                return users.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<User?> GetUserByUsernameAsync(string username)
+        {
+            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Username = @Username", new { Username = username });
             if (users.Count() > 0)
             {
                 return users.First();

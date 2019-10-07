@@ -57,7 +57,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var userId = Guid.NewGuid();
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.ReadUserAsync(userId).Returns(null as User?);
+            adapter.GetUserByIdAsync(userId).Returns(null as User?);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act
@@ -74,7 +74,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var userId = Guid.NewGuid();
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.ReadUserAsync(userId).Returns(new User
+            adapter.GetUserByIdAsync(userId).Returns(new User
             {
                 Id = userId,
                 Username = "someUser",
@@ -97,7 +97,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var userId = Guid.NewGuid();
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.ReadUserAsync(userId).Returns(new User
+            adapter.GetUserByIdAsync(userId).Returns(new User
             {
                 Id = userId,
             });

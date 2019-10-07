@@ -18,6 +18,7 @@ namespace AuthSystem.Interfaces
 
     public interface IUserManager
     {
+        Task<bool> ValidatePasswordAsync(string username, string password);
         Task<CreateUserResults> CreateUserAsync(string username, string password);
         Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
     }

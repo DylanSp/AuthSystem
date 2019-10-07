@@ -16,6 +16,11 @@ namespace AuthSystem.Managers
             PasswordService = passwordService;
         }
 
+        public async Task<bool> ValidatePasswordAsync(string username, string password)
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task<CreateUserResults> CreateUserAsync(string username, string password)
         {
             Guid id;
@@ -43,7 +48,7 @@ namespace AuthSystem.Managers
 
         public async Task<ChangePasswordResults> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
         {
-            var existingUser = await Adapter.ReadUserAsync(userId);
+            var existingUser = await Adapter.GetUserByIdAsync(userId);
             if (!existingUser.HasValue)
             {
                 return ChangePasswordResults.UserNotPresent;
