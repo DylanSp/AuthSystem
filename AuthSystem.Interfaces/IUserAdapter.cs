@@ -9,7 +9,7 @@ namespace AuthSystem.Interfaces
         Task<User?> GetUserByIdAsync(Guid userId);
         Task<User?> GetUserByUsernameAsync(string username);
         Task CreateAsync(User newUser);
-        Task<int> UpdateAsync(User newUserData);
+        Task<int> UpdateAsync(User newUserData);    // TODO - make param name consistent
         Task<bool> IsUserIdUniqueAsync(Guid userId);
         Task<bool> IsUsernameUniqueAsync(string username);
     }

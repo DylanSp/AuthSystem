@@ -9,7 +9,7 @@ namespace AuthSystem.Interfaces
     {
         Task<IEnumerable<Resource>> GetAllResourcesAsync();
         Task<Resource?> GetResourceAsync(Guid resourceId);
-        Task<Guid> CreateResourceAsync(string value);
+        Task CreateResourceAsync(Resource newResource);
         Task<int> UpdateResourceAsync(Resource newResource);
     }
 }

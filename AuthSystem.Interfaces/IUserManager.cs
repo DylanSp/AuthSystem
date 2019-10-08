@@ -17,10 +17,15 @@ namespace AuthSystem.Interfaces
         PasswordChanged,
     }
 
+    // GetIdForUsername() return types
+    public class UsernameDoesNotExist { }
+    public class UserIdReturned : ValueOf<Guid, UserIdReturned> { }
+
     public interface IUserManager
     {
         Task<bool> ValidatePasswordAsync(string username, string password);
         Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password);
         Task<ChangePasswordResult> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword);
+        Task<OneOf<UsernameDoesNotExist, UserIdReturned>> GetIdForUsername(string username);
     }
 }
