@@ -2,7 +2,6 @@
 using AuthSystem.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Managers
@@ -48,12 +47,40 @@ namespace AuthSystem.Managers
 
         public async Task<Resource?> GetResourceAsync(Guid resourceId, string username)
         {
-            throw new NotImplementedException();
+            var possibleUser = await UserManager.GetIdForUsername(username);
+            return await possibleUser.Match(
+                async usernameDoesNotExist => await Task.FromResult<Resource?>(null),
+                async userId =>
+                {
+                    // TODO - is there a way to move this code out? local function?
+                    var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, resourceId, PermissionType.Read);
+                    if (hasPermission)
+                    {
+                        return await Adapter.GetResourceAsync(resourceId);
+                    }
+                    else
+                    {
+                        return null;
+                    }
+                }
+            );
         }
 
         public async Task UpdateResourceAsync(Resource newResource, string username)
         {
-            throw new NotImplementedException();
+            var possibleUser = await UserManager.GetIdForUsername(username);
+            await possibleUser.Match(
+                usernameDoesNotExist => Task.CompletedTask,
+                async userId =>
+                {
+                    // TODO - is there a way to move this code out? local function?
+                    var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, newResource.Id, PermissionType.Write);
+                    if (hasPermission)
+                    {
+                        await Adapter.UpdateResourceAsync(newResource);
+                    }
+                }
+            );
         }
     }
 }
