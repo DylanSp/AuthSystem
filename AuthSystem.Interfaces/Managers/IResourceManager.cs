@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace AuthSystem.Interfaces
+namespace AuthSystem.Interfaces.Managers
 {
     public interface IResourceManager
     {

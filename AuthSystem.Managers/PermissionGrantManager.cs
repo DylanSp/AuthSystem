@@ -1,4 +1,5 @@
-﻿using AuthSystem.Interfaces;
+﻿using AuthSystem.Interfaces.Adapters;
+using AuthSystem.Interfaces.Managers;
 using System;
 using System.Threading.Tasks;
 

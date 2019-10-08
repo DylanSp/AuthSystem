@@ -1,5 +1,5 @@
 ﻿using AuthSystem.Data;
-using AuthSystem.Interfaces;
+using AuthSystem.Interfaces.Adapters;
 using Dapper;
 using System;
 using System.Collections.Generic;

@@ -2,7 +2,7 @@
 using AuthSystem.Data;
 using System.Threading.Tasks;
 
-namespace AuthSystem.Interfaces
+namespace AuthSystem.Interfaces.Adapters
 {
     public interface IUserAdapter
     {

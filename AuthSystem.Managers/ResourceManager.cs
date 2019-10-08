@@ -1,5 +1,6 @@
 ﻿using AuthSystem.Data;
-using AuthSystem.Interfaces;
+using AuthSystem.Interfaces.Adapters;
+using AuthSystem.Interfaces.Managers;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 
-namespace AuthSystem.Interfaces
+namespace AuthSystem.Interfaces.Managers
 {
     public enum PermissionType
     {

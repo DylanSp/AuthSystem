@@ -1,7 +1,8 @@
-﻿using System;
+﻿using AuthSystem.Interfaces.Managers;
+using System;
 using System.Threading.Tasks;
 
-namespace AuthSystem.Interfaces
+namespace AuthSystem.Interfaces.Adapters
 {
     public interface IPermissionGrantAdapter
     {

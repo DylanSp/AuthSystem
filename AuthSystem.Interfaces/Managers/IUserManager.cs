@@ -3,7 +3,7 @@ using System;
 using System.Threading.Tasks;
 using ValueOf;
 
-namespace AuthSystem.Interfaces
+namespace AuthSystem.Interfaces.Managers
 {
     // CreateUserAsync() return types
     public class UsernameAlreadyExists { }

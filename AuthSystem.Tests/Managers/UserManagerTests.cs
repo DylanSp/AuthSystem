@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using AuthSystem.Data;
 using AuthSystem.Interfaces;
+using AuthSystem.Interfaces.Adapters;
+using AuthSystem.Interfaces.Managers;
 using AuthSystem.Managers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
-using NSubstitute.ReturnsExtensions;
 
 namespace AuthSystem.Tests.Managers
 {
