@@ -95,8 +95,8 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, "");
 
             // Assert
-            result.Match(
-                usernameAlreadyExists => true,
+            result.Switch(
+                usernameAlreadyExists => { },
                 userCreated => throw new Exception("test failed")
             );
         }
@@ -115,9 +115,9 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, "");
 
             // Assert
-            result.Match(
+            result.Switch(
                 usernameAlreadyExists => throw new Exception("test failed"),
-                userCreated => true
+                userCreated => { }
             );
         }
 
