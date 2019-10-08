@@ -43,6 +43,7 @@ namespace AuthSystem.Managers
         public async Task<IEnumerable<Resource>> GetAllResourcesAsync(string username)
         {
             throw new NotImplementedException();
+            // TODO - to avoid a bunch of DB queries, implement IPermissionGrantManager method to return all grants for a given user?
         }
 
         public async Task<Resource?> GetResourceAsync(Guid resourceId, string username)
