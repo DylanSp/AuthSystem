@@ -59,16 +59,16 @@ namespace AuthSystem.Adapters
                 });
         }
 
-        public async Task<int> UpdateAsync(User newUserData)
+        public async Task<int> UpdateAsync(User newUser)
         {
             return await Connection.ExecuteAsync(
                 "UPDATE Users SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt WHERE Id = @Id",
                 new
                 {
-                    Username = newUserData.Username,
-                    Hash = newUserData.HashedPassword.Base64PasswordHash,
-                    Salt = newUserData.HashedPassword.Base64Salt,
-                    Id = newUserData.Id
+                    Username = newUser.Username,
+                    Hash = newUser.HashedPassword.Base64PasswordHash,
+                    Salt = newUser.HashedPassword.Base64Salt,
+                    Id = newUser.Id
                 });
         }
 
