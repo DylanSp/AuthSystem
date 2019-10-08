@@ -30,11 +30,7 @@ namespace AuthSystem.Managers
 
         public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password)
         {
-            Guid id;
-            do
-            {
-                id = Guid.NewGuid();
-            } while (!await Adapter.IsUserIdUniqueAsync(id));
+            var id = Guid.NewGuid();
 
             if (!await Adapter.IsUsernameUniqueAsync(username))
             {

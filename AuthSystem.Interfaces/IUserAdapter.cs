@@ -10,7 +10,6 @@ namespace AuthSystem.Interfaces
         Task<User?> GetUserByUsernameAsync(string username);
         Task CreateAsync(User newUser);
         Task<int> UpdateAsync(User newUser);
-        Task<bool> IsUserIdUniqueAsync(Guid userId);
         Task<bool> IsUsernameUniqueAsync(string username);
     }
 }

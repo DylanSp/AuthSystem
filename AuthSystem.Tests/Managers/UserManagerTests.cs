@@ -88,7 +88,6 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var username = "Bob";
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.IsUserIdUniqueAsync(Arg.Any<Guid>()).Returns(true);
             adapter.IsUsernameUniqueAsync(username).Returns(false);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
@@ -109,7 +108,6 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var username = "Bob";
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.IsUserIdUniqueAsync(Arg.Any<Guid>()).Returns(true);
             adapter.IsUsernameUniqueAsync(username).Returns(true);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
