@@ -39,12 +39,7 @@ namespace AuthSystem.Managers
                 return new UsernameAlreadyExists();
             }
 
-            var user = new User
-            {
-                Id = id,
-                Username = username,
-                HashedPassword = PasswordService.GeneratePasswordHashAndSalt(password),
-            };
+            var user = new User(id, username, PasswordService.GeneratePasswordHashAndSalt(password));
 
             await Adapter.CreateAsync(user);
 
@@ -67,12 +62,7 @@ namespace AuthSystem.Managers
             }
 
             var newPasswordHash = PasswordService.GeneratePasswordHashAndSalt(newPassword);
-            var newUserData = new User
-            {
-                Id = existingUser.Value.Id,
-                Username = existingUser.Value.Username,
-                HashedPassword = newPasswordHash,
-            };
+            var newUserData = new User(existingUser.Value.Id, existingUser.Value.Username, newPasswordHash);
             
             // TODO - check if return == 1, throw error if not?
             await Adapter.UpdateAsync(newUserData);

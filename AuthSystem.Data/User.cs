@@ -4,9 +4,9 @@ namespace AuthSystem.Data
 {
     public struct User
     {
-        public Guid Id { get; set; }
-        public string Username { get; set; }
-        public HashedPassword HashedPassword { get; set; }
+        public Guid Id { get; }
+        public string Username { get; }
+        public HashedPassword HashedPassword { get; }
 
         public User(Guid id, string username, HashedPassword hashedPassword)
         {

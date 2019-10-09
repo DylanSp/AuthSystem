@@ -37,11 +37,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var username = "Alice";
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByUsernameAsync(username).Returns(new User
-            {
-                Username = username,
-                HashedPassword = new HashedPassword(),
-            });
+            adapter.GetUserByUsernameAsync(username).Returns(new User(Guid.NewGuid(), username, new HashedPassword()));
 
             var passwordService = Substitute.For<IPasswordService>();
             passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(false);
@@ -62,11 +58,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var username = "Alice";
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByUsernameAsync(username).Returns(new User
-            {
-                Username = username,
-                HashedPassword = new HashedPassword(),
-            });
+            adapter.GetUserByUsernameAsync(username).Returns(new User(Guid.NewGuid(), username, new HashedPassword()));
 
             var passwordService = Substitute.For<IPasswordService>();
             passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(true);
@@ -144,11 +136,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var userId = Guid.NewGuid();
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByIdAsync(userId).Returns(new User
-            {
-                Id = userId,
-                Username = "someUser",
-            });
+            adapter.GetUserByIdAsync(userId).Returns(new User(userId, "someUser", new HashedPassword()));
             var passwordService = Substitute.For<IPasswordService>();
             passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(false);
             var manager = new UserManager(adapter, passwordService);
@@ -167,10 +155,7 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var userId = Guid.NewGuid();
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByIdAsync(userId).Returns(new User
-            {
-                Id = userId,
-            });
+            adapter.GetUserByIdAsync(userId).Returns(new User(userId, "", new HashedPassword()));
             var passwordService = Substitute.For<IPasswordService>();
             passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(true);
             var manager = new UserManager(adapter, passwordService);

@@ -6,8 +6,8 @@ namespace AuthSystem.Data
 {
     public struct Resource
     {
-        public Guid Id { get; set; }
-        public string Value { get; set; }
+        public Guid Id { get; }
+        public string Value { get; }
         
         public Resource(Guid id, string value)
         {
