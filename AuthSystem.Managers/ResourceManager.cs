@@ -3,6 +3,7 @@ using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Managers
@@ -42,8 +43,22 @@ namespace AuthSystem.Managers
 
         public async Task<IEnumerable<Resource>> GetAllResourcesAsync(string username)
         {
-            throw new NotImplementedException();
-            // TODO - to avoid a bunch of DB queries, implement IPermissionGrantManager method to return all grants for a given user?
+            var possibleUser = await UserManager.GetIdForUsername(username);
+            return await possibleUser.Match<Task<IEnumerable<Resource>>>(
+                async usernameDoesNotExist => await Task.FromResult(new List<Resource>()),
+                async userId =>
+                {
+                    // TODO - is there a way to move this code out? local function?
+                    var grants = await PermissionGrantManager.GetAllPermissionsForUserAsync(userId.Value);
+                    var allResources = await Adapter.GetAllResourcesAsync();
+                    var allowedResources = from resource in allResources
+                                           join grant in grants
+                                                on resource.Id equals grant.ResourceId
+                                           where grant.UserId == userId.Value && grant.PermissionType == PermissionType.Read
+                                           select resource;
+                    return allowedResources;
+                }
+            );
         }
 
         public async Task<Resource?> GetResourceAsync(Guid resourceId, string username)
