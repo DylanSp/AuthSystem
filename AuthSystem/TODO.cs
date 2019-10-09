@@ -6,4 +6,6 @@ using System.Threading.Tasks;
 namespace AuthSystem
 {
     // TODO - use ValueOf to create distinct UserId, PermissionGrantId, ResourceId types
+    // TODO - genericize adapters to just take IDbConnection?
+    // TODO - implement adapters for resources, permission grants
 }
