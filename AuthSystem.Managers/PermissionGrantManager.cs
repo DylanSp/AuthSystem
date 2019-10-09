@@ -1,6 +1,8 @@
-﻿using AuthSystem.Interfaces.Adapters;
+﻿using AuthSystem.Data;
+using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Managers
@@ -27,6 +29,11 @@ namespace AuthSystem.Managers
         public async Task DeletePermissionGrantAsync(Guid permissionId)
         {
             await Adapter.DeletePermissionGrantAsync(permissionId);
+        }
+
+        public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(Guid userId)
+        {
+            return await Adapter.GetAllPermissionsForUserAsync(userId);
         }
     }
 }
