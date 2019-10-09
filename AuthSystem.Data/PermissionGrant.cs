@@ -11,10 +11,10 @@ namespace AuthSystem.Data
 
     public struct PermissionGrant
     {
-        Guid Id { get; set; }
-        Guid UserId { get; set; }
-        Guid ResourceId { get; set; }
-        PermissionType PermissionType { get; set; }
+        public Guid Id { get; set; }
+        public Guid UserId { get; set; }
+        public Guid ResourceId { get; set; }
+        public PermissionType PermissionType { get; set; }
 
         public PermissionGrant(Guid id, Guid userId, Guid resourceId, PermissionType permissionType)
         {
