@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace AuthSystem.Data
+﻿namespace AuthSystem.Data
 {
     public enum PermissionType
     {
@@ -11,12 +9,12 @@ namespace AuthSystem.Data
 
     public struct PermissionGrant
     {
-        public Guid Id { get; }
-        public Guid UserId { get; }
-        public Guid ResourceId { get; }
+        public PermissionGrantId Id { get; }
+        public UserId UserId { get; }
+        public ResourceId ResourceId { get; }
         public PermissionType PermissionType { get; }
 
-        public PermissionGrant(Guid id, Guid userId, Guid resourceId, PermissionType permissionType)
+        public PermissionGrant(PermissionGrantId id, UserId userId, ResourceId resourceId, PermissionType permissionType)
         {
             Id = id;
             UserId = userId;

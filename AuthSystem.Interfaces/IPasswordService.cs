@@ -4,7 +4,7 @@ namespace AuthSystem.Interfaces
 {
     public interface IPasswordService
     {
-        HashedPassword GeneratePasswordHashAndSalt(string password);
-        bool CheckIfPasswordMatchesHash(string password, HashedPassword hash);
+        HashedPassword GeneratePasswordHashAndSalt(PlaintextPassword password);
+        bool CheckIfPasswordMatchesHash(PlaintextPassword password, HashedPassword hash);
     }
 }

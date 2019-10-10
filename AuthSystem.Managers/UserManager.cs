@@ -19,7 +19,7 @@ namespace AuthSystem.Managers
             PasswordService = passwordService;
         }
 
-        public async Task<bool> ValidatePasswordAsync(string username, string password)
+        public async Task<bool> ValidatePasswordAsync(Username username, PlaintextPassword password)
         {
             var user = await Adapter.GetUserByUsernameAsync(username);
             if (!user.HasValue)
@@ -30,9 +30,9 @@ namespace AuthSystem.Managers
             return PasswordService.CheckIfPasswordMatchesHash(password, user.Value.HashedPassword);
         }
 
-        public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(string username, string password)
+        public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(Username username, PlaintextPassword password)
         {
-            var id = Guid.NewGuid();
+            var id = UserId.From(Guid.NewGuid());
 
             if (!await Adapter.IsUsernameUniqueAsync(username))
             {
@@ -46,7 +46,7 @@ namespace AuthSystem.Managers
             return UserCreated.From(id);
         }
 
-        public async Task<ChangePasswordResult> ChangePasswordAsync(Guid userId, string oldPassword, string newPassword)
+        public async Task<ChangePasswordResult> ChangePasswordAsync(UserId userId, PlaintextPassword oldPassword, PlaintextPassword newPassword)
         {
             var existingUser = await Adapter.GetUserByIdAsync(userId);
             if (!existingUser.HasValue)
@@ -70,7 +70,7 @@ namespace AuthSystem.Managers
             return ChangePasswordResult.PasswordChanged;
         }
 
-        public async Task<OneOf<UsernameDoesNotExist, UserIdReturned>> GetIdForUsername(string username)
+        public async Task<OneOf<UsernameDoesNotExist, UserIdReturned>> GetIdForUsername(Username username)
         {
             var user = await Adapter.GetUserByUsernameAsync(username);
             if (user.HasValue)

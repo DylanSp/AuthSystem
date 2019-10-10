@@ -8,9 +8,9 @@ namespace AuthSystem.Interfaces.Adapters
 {
     public interface IPermissionGrantAdapter
     {
-        Task<Guid> CreatePermissionGrantAsync(Guid userId, Guid resourceId, PermissionType permission);    // TODO - return type? return differently if user/resource don't exist?
-        Task DeletePermissionGrantAsync(Guid permissionId);  // TODO - return type? return differently if permission doesn't exist?
-        Task<bool> CheckIfUserHasPermissionAsync(Guid userId, Guid resourceId, PermissionType permission);   // TODO - return type? return differently if user/resource don't exist?
-        Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(Guid userId);
+        Task<PermissionGrantId> CreatePermissionGrantAsync(UserId userId, ResourceId resourceId, PermissionType permission);    // TODO - return type? return differently if user/resource don't exist?
+        Task DeletePermissionGrantAsync(PermissionGrantId permissionId);  // TODO - return type? return differently if permission doesn't exist?
+        Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission);   // TODO - return type? return differently if user/resource don't exist?
+        Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(UserId userId);
     }
 }

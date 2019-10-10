@@ -19,9 +19,9 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
-        public async Task<User?> GetUserByIdAsync(Guid userId)
+        public async Task<User?> GetUserByIdAsync(UserId userId)
         {
-            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = userId });
+            var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Id = @Id", new { Id = userId.Value });
             if (users.Count() > 0)
             {
                 return users.First();
@@ -32,7 +32,7 @@ namespace AuthSystem.Adapters
             }
         }
 
-        public async Task<User?> GetUserByUsernameAsync(string username)
+        public async Task<User?> GetUserByUsernameAsync(Username username)
         {
             var users = await Connection.QueryAsync<User>("SELECT Id, Username, Base64PasswordHash, Base64Salt FROM Users WHERE Username = @Username", new { Username = username });
             if (users.Count() > 0)
@@ -72,7 +72,7 @@ namespace AuthSystem.Adapters
                 });
         }
 
-        public async Task<bool> IsUsernameUniqueAsync(string username)
+        public async Task<bool> IsUsernameUniqueAsync(Username username)
         {
             var usersWithUsername =
                 await Connection.ExecuteScalarAsync<int>("SELECT COUNT(*) FROM Users WHERE Username = @Username",

@@ -1,12 +1,12 @@
-﻿using System;
-using System.Threading.Tasks;
-using AuthSystem.Data;
+﻿using AuthSystem.Data;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
 using AuthSystem.Managers;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using System;
+using System.Threading.Tasks;
 
 namespace AuthSystem.Tests.Managers
 {
@@ -18,13 +18,13 @@ namespace AuthSystem.Tests.Managers
         public async Task ValidatePassword_ForNonexistentUser_ReturnsFalse()
         {
             // Arrange
-            var username = "Alice";
+            var username = Username.From("Alice");
             var adapter = Substitute.For<IUserAdapter>();
             adapter.GetUserByUsernameAsync(username).Returns(null as User?);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act
-            var result = await manager.ValidatePasswordAsync(username, "somePass");
+            var result = await manager.ValidatePasswordAsync(username, PlaintextPassword.From("somePass"));
 
             // Assert
             Assert.IsFalse(result);
@@ -35,17 +35,17 @@ namespace AuthSystem.Tests.Managers
         public async Task ValidatePassword_WithWrongPassword_ReturnsFalse()
         {
             // Arrange
-            var username = "Alice";
+            var username = Username.From("Alice");
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByUsernameAsync(username).Returns(new User(Guid.NewGuid(), username, new HashedPassword()));
+            adapter.GetUserByUsernameAsync(username).Returns(new User(UserId.From(Guid.NewGuid()), username, new HashedPassword()));
 
             var passwordService = Substitute.For<IPasswordService>();
-            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(false);
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<PlaintextPassword>(), Arg.Any<HashedPassword>()).Returns(false);
             
             var manager = new UserManager(adapter, passwordService);
 
             // Act
-            var result = await manager.ValidatePasswordAsync(username, "somePass");
+            var result = await manager.ValidatePasswordAsync(username, PlaintextPassword.From("somePass"));
 
             // Assert
             Assert.IsFalse(result);
@@ -56,17 +56,17 @@ namespace AuthSystem.Tests.Managers
         public async Task ValidatePassword_WithCorrectPassword_ReturnsTrue()
         {
             // Arrange
-            var username = "Alice";
+            var username = Username.From("Alice");
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByUsernameAsync(username).Returns(new User(Guid.NewGuid(), username, new HashedPassword()));
+            adapter.GetUserByUsernameAsync(username).Returns(new User(UserId.From(Guid.NewGuid()), username, new HashedPassword()));
 
             var passwordService = Substitute.For<IPasswordService>();
-            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(true);
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<PlaintextPassword>(), Arg.Any<HashedPassword>()).Returns(true);
 
             var manager = new UserManager(adapter, passwordService);
 
             // Act
-            var result = await manager.ValidatePasswordAsync(username, "somePass");
+            var result = await manager.ValidatePasswordAsync(username, PlaintextPassword.From("somePass"));
 
             // Assert
             Assert.IsTrue(result);
@@ -77,13 +77,13 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateUser_WithAlreadyExistingName_ReturnsAppropriateFailure()
         {
             // Arrange
-            var username = "Bob";
+            var username = Username.From("Bob");
             var adapter = Substitute.For<IUserAdapter>();
             adapter.IsUsernameUniqueAsync(username).Returns(false);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act
-            var result = await manager.CreateUserAsync(username, "");
+            var result = await manager.CreateUserAsync(username, PlaintextPassword.From(""));
 
             // Assert
             result.Switch(
@@ -97,13 +97,13 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateUser_WithUniqueUsername_ReturnsSuccess()
         {
             // Arrange
-            var username = "Bob";
+            var username = Username.From("Bob");
             var adapter = Substitute.For<IUserAdapter>();
             adapter.IsUsernameUniqueAsync(username).Returns(true);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act
-            var result = await manager.CreateUserAsync(username, "");
+            var result = await manager.CreateUserAsync(username, PlaintextPassword.From(""));
 
             // Assert
             result.Switch(
@@ -117,13 +117,13 @@ namespace AuthSystem.Tests.Managers
         public async Task ChangePassword_WithNonexistentUser_ReturnsAppropriateError()
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var userId = UserId.From(Guid.NewGuid());
             var adapter = Substitute.For<IUserAdapter>();
             adapter.GetUserByIdAsync(userId).Returns(null as User?);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act
-            var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
+            var result = await manager.ChangePasswordAsync(userId, PlaintextPassword.From("oldpass"), PlaintextPassword.From("newpass"));
 
             // Assert
             Assert.AreEqual(ChangePasswordResult.UserNotPresent, result);
@@ -134,15 +134,15 @@ namespace AuthSystem.Tests.Managers
         public async Task ChangePassword_WithIncorrectOldPassword_ReturnsAppropriateError()
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var userId = UserId.From(Guid.NewGuid());
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByIdAsync(userId).Returns(new User(userId, "someUser", new HashedPassword()));
+            adapter.GetUserByIdAsync(userId).Returns(new User(userId, Username.From("someUser"), new HashedPassword()));
             var passwordService = Substitute.For<IPasswordService>();
-            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(false);
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<PlaintextPassword>(), Arg.Any<HashedPassword>()).Returns(false);
             var manager = new UserManager(adapter, passwordService);
 
             // Act
-            var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
+            var result = await manager.ChangePasswordAsync(userId, PlaintextPassword.From("oldpass"), PlaintextPassword.From("newpass"));
 
             // Assert
             Assert.AreEqual(ChangePasswordResult.PasswordIncorrect, result);
@@ -153,15 +153,15 @@ namespace AuthSystem.Tests.Managers
         public async Task ChangePassword_WithExistingUsernameAndCorrectOldPassword_ReturnsSuccess()
         {
             // Arrange
-            var userId = Guid.NewGuid();
+            var userId = UserId.From(Guid.NewGuid());
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByIdAsync(userId).Returns(new User(userId, "", new HashedPassword()));
+            adapter.GetUserByIdAsync(userId).Returns(new User(userId, Username.From(""), new HashedPassword()));
             var passwordService = Substitute.For<IPasswordService>();
-            passwordService.CheckIfPasswordMatchesHash(Arg.Any<string>(), Arg.Any<HashedPassword>()).Returns(true);
+            passwordService.CheckIfPasswordMatchesHash(Arg.Any<PlaintextPassword>(), Arg.Any<HashedPassword>()).Returns(true);
             var manager = new UserManager(adapter, passwordService);
 
             // Act
-            var result = await manager.ChangePasswordAsync(userId, "oldpass", "newpass");
+            var result = await manager.ChangePasswordAsync(userId, PlaintextPassword.From("oldpass"), PlaintextPassword.From("newpass"));
 
             // Assert
             Assert.AreEqual(ChangePasswordResult.PasswordChanged, result);

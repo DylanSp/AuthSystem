@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AuthSystem.Data
+﻿namespace AuthSystem.Data
 {
     public struct HashedPassword
     {
-        public string Base64PasswordHash { get; }
-        public string Base64Salt { get; }
+        public Base64Hash Base64PasswordHash { get; }
+        public Base64Salt Base64Salt { get; }
 
-        public HashedPassword(string passwordHash, string salt)
+        public HashedPassword(Base64Hash passwordHash, Base64Salt salt)
         {
             Base64PasswordHash = passwordHash;
             Base64Salt = salt;

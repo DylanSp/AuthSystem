@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace AuthSystem.Data
+﻿namespace AuthSystem.Data
 {
     public struct Resource
     {
-        public Guid Id { get; }
-        public string Value { get; }
+        public ResourceId Id { get; }
+        public ResourceValue Value { get; }
         
-        public Resource(Guid id, string value)
+        public Resource(ResourceId id, ResourceValue value)
         {
             Id = id;
             Value = value;

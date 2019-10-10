@@ -1,7 +1,6 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
@@ -16,22 +15,22 @@ namespace AuthSystem.Managers
             Adapter = adapter;
         }
 
-        public async Task<bool> CheckIfUserHasPermissionAsync(Guid userId, Guid resourceId, PermissionType permission)
+        public async Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission)
         {
             return await Adapter.CheckIfUserHasPermissionAsync(userId, resourceId, permission);
         }
 
-        public async Task<Guid> CreatePermissionGrantAsync(Guid userId, Guid resourceId, PermissionType permission)
+        public async Task<PermissionGrantId> CreatePermissionGrantAsync(UserId userId, ResourceId resourceId, PermissionType permission)
         {
             return await Adapter.CreatePermissionGrantAsync(userId, resourceId, permission);
         }
 
-        public async Task DeletePermissionGrantAsync(Guid permissionId)
+        public async Task DeletePermissionGrantAsync(PermissionGrantId permissionId)
         {
             await Adapter.DeletePermissionGrantAsync(permissionId);
         }
 
-        public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(Guid userId)
+        public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(UserId userId)
         {
             return await Adapter.GetAllPermissionsForUserAsync(userId);
         }

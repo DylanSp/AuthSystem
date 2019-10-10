@@ -21,7 +21,7 @@ namespace AuthSystem.Managers
             PermissionGrantManager = permissionGrantManager;
         }
 
-        public async Task<Guid> CreateResourceAsync(string value, string username)
+        public async Task<ResourceId> CreateResourceAsync(ResourceValue value, Username username)
         {
             var possibleUserId = await UserManager.GetIdForUsername(username);
             return await possibleUserId.Match(
@@ -29,7 +29,7 @@ namespace AuthSystem.Managers
                 async userId =>
                 {
                     // TODO - is there a way to move this code out? local function?
-                    var resourceId = Guid.NewGuid();    // TODO - bother with checking for uniqueness with adapter, i.e. user manager?
+                    var resourceId = ResourceId.From(Guid.NewGuid());    // TODO - bother with checking for uniqueness with adapter, i.e. user manager?
                     var resource = new Resource(resourceId, value);
                     await Adapter.CreateResourceAsync(resource);
 
@@ -41,7 +41,7 @@ namespace AuthSystem.Managers
             );
         }
 
-        public async Task<IEnumerable<Resource>> GetAllResourcesAsync(string username)
+        public async Task<IEnumerable<Resource>> GetAllResourcesAsync(Username username)
         {
             var possibleUser = await UserManager.GetIdForUsername(username);
             return await possibleUser.Match<Task<IEnumerable<Resource>>>(
@@ -61,7 +61,7 @@ namespace AuthSystem.Managers
             );
         }
 
-        public async Task<Resource?> GetResourceAsync(Guid resourceId, string username)
+        public async Task<Resource?> GetResourceAsync(ResourceId resourceId, Username username)
         {
             var possibleUser = await UserManager.GetIdForUsername(username);
             return await possibleUser.Match(
@@ -82,7 +82,7 @@ namespace AuthSystem.Managers
             );
         }
 
-        public async Task UpdateResourceAsync(Resource newResource, string username)
+        public async Task UpdateResourceAsync(Resource newResource, Username username)
         {
             var possibleUser = await UserManager.GetIdForUsername(username);
             await possibleUser.Match(

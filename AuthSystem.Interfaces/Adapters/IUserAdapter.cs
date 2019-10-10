@@ -6,10 +6,10 @@ namespace AuthSystem.Interfaces.Adapters
 {
     public interface IUserAdapter
     {
-        Task<User?> GetUserByIdAsync(Guid userId);
-        Task<User?> GetUserByUsernameAsync(string username);
+        Task<User?> GetUserByIdAsync(UserId userId);
+        Task<User?> GetUserByUsernameAsync(Username username);
         Task CreateAsync(User newUser);
         Task<int> UpdateAsync(User newUser);
-        Task<bool> IsUsernameUniqueAsync(string username);
+        Task<bool> IsUsernameUniqueAsync(Username username);
     }
 }

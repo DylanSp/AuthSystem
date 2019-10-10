@@ -1,14 +1,12 @@
-﻿using System;
-
-namespace AuthSystem.Data
+﻿namespace AuthSystem.Data
 {
     public struct User
     {
-        public Guid Id { get; }
-        public string Username { get; }
+        public UserId Id { get; }
+        public Username Username { get; }
         public HashedPassword HashedPassword { get; }
 
-        public User(Guid id, string username, HashedPassword hashedPassword)
+        public User(UserId id, Username username, HashedPassword hashedPassword)
         {
             Id = id;
             Username = username;
