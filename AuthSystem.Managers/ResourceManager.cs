@@ -1,6 +1,7 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
+using OneOf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,22 +22,21 @@ namespace AuthSystem.Managers
             PermissionGrantManager = permissionGrantManager;
         }
 
-        public async Task<ResourceId> CreateResourceAsync(ResourceValue value, Username username)
+        public async Task<OneOf<CreatingUserDoesNotExist, ResourceCreated>> CreateResourceAsync(ResourceValue value, Username username)
         {
             var possibleUserId = await UserManager.GetIdForUsername(username);
-            return await possibleUserId.Match(
-                usernameDoesNotExist => throw new Exception(),   // TODO - put in return type
+            return await possibleUserId.Match<Task<OneOf<CreatingUserDoesNotExist, ResourceCreated>>>(
+                async usernameDoesNotExist => await Task.FromResult(new CreatingUserDoesNotExist()),
                 async userId =>
                 {
-                    // TODO - is there a way to move this code out? local function?
-                    var resourceId = ResourceId.From(Guid.NewGuid());    // TODO - bother with checking for uniqueness with adapter, i.e. user manager?
+                    var resourceId = ResourceId.From(Guid.NewGuid());
                     var resource = new Resource(resourceId, value);
                     await Adapter.CreateResourceAsync(resource);
 
                     await PermissionGrantManager.CreatePermissionGrantAsync(userId.Value, resourceId, PermissionType.Read);
                     await PermissionGrantManager.CreatePermissionGrantAsync(userId.Value, resourceId, PermissionType.Write);
 
-                    return resourceId;
+                    return ResourceCreated.From(resourceId);
                 }
             );
         }
@@ -48,7 +48,6 @@ namespace AuthSystem.Managers
                 async usernameDoesNotExist => await Task.FromResult(new List<Resource>()),
                 async userId =>
                 {
-                    // TODO - is there a way to move this code out? local function?
                     var grants = await PermissionGrantManager.GetAllPermissionsForUserAsync(userId.Value);
                     var allResources = await Adapter.GetAllResourcesAsync();
                     var allowedResources = from resource in allResources
@@ -68,16 +67,8 @@ namespace AuthSystem.Managers
                 async usernameDoesNotExist => await Task.FromResult<Resource?>(null),
                 async userId =>
                 {
-                    // TODO - is there a way to move this code out? local function?
                     var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, resourceId, PermissionType.Read);
-                    if (hasPermission)
-                    {
-                        return await Adapter.GetResourceAsync(resourceId);
-                    }
-                    else
-                    {
-                        return null;
-                    }
+                    return hasPermission ? await Adapter.GetResourceAsync(resourceId) : null;
                 }
             );
         }
@@ -89,7 +80,6 @@ namespace AuthSystem.Managers
                 usernameDoesNotExist => Task.CompletedTask,
                 async userId =>
                 {
-                    // TODO - is there a way to move this code out? local function?
                     var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, newResource.Id, PermissionType.Write);
                     if (hasPermission)
                     {
