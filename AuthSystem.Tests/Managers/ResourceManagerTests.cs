@@ -185,7 +185,127 @@ namespace AuthSystem.Tests.Managers
             Assert.IsFalse(result.Contains(nonPermittedResource));
         }
 
-        // TODO - tests for CreateResourceAsync()
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task CreateResource_ForNonexistentUser_ReturnsError()
+        {
+            // Arrange
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someValue"), Username.From("someUser"));
+
+            // Assert
+            result.Switch(
+                creatingUserDoesNotExist => { },
+                resourceCreated => throw new Exception("Test failed")
+            );
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task CreateResource_ForValidUser_ReturnsResourceId()
+        {
+            // Arrange
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+
+            // Assert
+            result.Switch(
+                creatingUserDoesNotExist => throw new Exception("Test failed"),
+                resourceCreated =>
+                {
+                    Assert.IsInstanceOfType(resourceCreated.Value, typeof(ResourceId));
+                }
+            );
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task CreateResource_ForValidUser_CallsAdapterCreateResource()
+        {
+            // Arrange
+            var adapter = Substitute.For<IResourceAdapter>();
+
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Hailey"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var resourceManager = new ResourceManager(adapter, userManager, Substitute.For<IPermissionGrantManager>());
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+
+            // Assert
+            result.Switch(
+                creatingUserDoesNotExist => throw new Exception("Test failed"),
+                resourceCreated =>
+                {
+                    adapter.Received().CreateResourceAsync(Arg.Any<Resource>());
+                }
+            );
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task CreateResource_ForValidUser_GivesUserReadPermissionsOnCreatedResource()
+        {
+            // Arrange
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+
+            // Assert
+            result.Switch(
+                creatingUserDoesNotExist => throw new Exception("Test failed"),
+                resourceCreated =>
+                {
+                    permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, resourceCreated.Value, PermissionType.Read);
+                }
+            );
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task CreateResource_ForValidUser_GivesUserWritePermissionsOnCreatedResource()
+        {
+            // Arrange
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+
+            // Assert
+            result.Switch(
+                creatingUserDoesNotExist => throw new Exception("Test failed"),
+                resourceCreated =>
+                {
+                    permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, resourceCreated.Value, PermissionType.Write);
+                }
+            );
+        }
 
         // TODO - tests for UpdateResourceAsync()
     }
