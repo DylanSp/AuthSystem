@@ -21,6 +21,6 @@ namespace AuthSystem.Interfaces.Managers
         Task<IEnumerable<Resource>> GetAllResourcesAsync(Username username);
         Task<Resource?> GetResourceAsync(ResourceId resourceId, Username username);
         Task<OneOf<CreatingUserDoesNotExist, ResourceCreated>> CreateResourceAsync(ResourceValue value, Username username);
-        Task<UpdateResourceResult> UpdateResourceAsync(Resource newResource, Username username); // TODO - should this return result, whether success or not?
+        Task<UpdateResourceResult> UpdateResourceAsync(Resource newResource, Username username);
     }
 }
