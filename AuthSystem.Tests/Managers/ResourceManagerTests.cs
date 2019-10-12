@@ -260,7 +260,7 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateResource_ForValidUser_GivesUserReadPermissionsOnCreatedResource()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Iago"), new HashedPassword());
             var userManager = Substitute.For<IUserManager>();
             userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
@@ -286,7 +286,7 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateResource_ForValidUser_GivesUserWritePermissionsOnCreatedResource()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Jane"), new HashedPassword());
             var userManager = Substitute.For<IUserManager>();
             userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
@@ -307,6 +307,95 @@ namespace AuthSystem.Tests.Managers
             );
         }
 
-        // TODO - tests for UpdateResourceAsync()
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task UpdateResource_ForNonexistentUser_ReturnsNotPermitted()
+        {
+            // Arrange
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
+
+            // Act
+            var result = await resourceManager.UpdateResourceAsync(new Resource(), Username.From("Kate"));
+
+            // Assert
+            Assert.AreEqual(UpdateResourceResult.UserDoesNotHavePermission, result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task UpdateResource_ForExistingUserWithoutPermission_ReturnsNotPermitted()
+        {
+            // Arrange
+            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Lawrence"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+            permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(false);
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+
+            // Act
+            var result = await resourceManager.UpdateResourceAsync(newResource, user.Username);
+
+            // Assert
+            Assert.AreEqual(UpdateResourceResult.UserDoesNotHavePermission, result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task UpdateResource_ForExistingUserWithPermission_ReturnsSuccess()
+        {
+            // Arrange
+            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+            permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+
+            // Act
+            var result = await resourceManager.UpdateResourceAsync(newResource, user.Username);
+
+            // Assert
+            Assert.AreEqual(UpdateResourceResult.ResourceUpdated, result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task UpdateResource_ForExistingUserWithPermission_CallsAdapterUpdateResource()
+        {
+            // Arrange
+            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+
+            var adapter = Substitute.For<IResourceAdapter>();
+
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), new HashedPassword());
+            var userManager = Substitute.For<IUserManager>();
+            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+            permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);
+
+            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+
+            // Act
+            await resourceManager.UpdateResourceAsync(newResource, user.Username);
+
+            // Assert
+            await adapter.Received().UpdateResourceAsync(newResource);
+        }
     }
 }

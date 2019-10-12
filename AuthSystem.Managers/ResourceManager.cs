@@ -73,17 +73,22 @@ namespace AuthSystem.Managers
             );
         }
 
-        public async Task UpdateResourceAsync(Resource newResource, Username username)
+        public async Task<UpdateResourceResult> UpdateResourceAsync(Resource newResource, Username username)
         {
             var possibleUser = await UserManager.GetIdForUsername(username);
-            await possibleUser.Match(
-                usernameDoesNotExist => Task.CompletedTask,
+            return await possibleUser.Match(
+                async usernameDoesNotExist => await Task.FromResult(UpdateResourceResult.UserDoesNotHavePermission),
                 async userId =>
                 {
                     var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, newResource.Id, PermissionType.Write);
                     if (hasPermission)
                     {
                         await Adapter.UpdateResourceAsync(newResource);
+                        return UpdateResourceResult.ResourceUpdated;
+                    }
+                    else
+                    {
+                        return UpdateResourceResult.UserDoesNotHavePermission;
                     }
                 }
             );
