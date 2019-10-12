@@ -8,11 +8,13 @@ namespace AuthSystem.Services
     {
         public HashedPassword GeneratePasswordHashAndSalt(PlaintextPassword password)
         {
+            // TODO - implement
             throw new NotImplementedException();
         }
 
         public bool CheckIfPasswordMatchesHash(PlaintextPassword password, HashedPassword hash)
         {
+            // TODO - implement
             throw new NotImplementedException();
         }
     }
