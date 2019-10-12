@@ -1,0 +1,1 @@
+docker run --name auth-postgres -e POSTGRES_PASSWORD=adminpass -e POSTGRES_DB=AuthSystem -d -p 5432:5432 postgres:12

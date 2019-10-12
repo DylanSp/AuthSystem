@@ -1,0 +1,1 @@
+﻿evolve migrate postgresql -c "Server=127.0.0.1;Database=AuthSystem;User Id=postgres;Password=adminpass;" -l "migrations" -s public --metadata-table Evolve_Changelog
