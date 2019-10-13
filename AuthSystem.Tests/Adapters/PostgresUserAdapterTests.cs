@@ -37,7 +37,7 @@ namespace AuthSystem.Tests.Adapters
             var adapter = new PostgresUserAdapter(connection);
 
             // Act
-            await adapter.CreateAsync(userToCreate);
+            await adapter.CreateUserAsync(userToCreate);
             var readUser = await adapter.GetUserByIdAsync(userToCreate.Id);
 
             // Assert
@@ -54,7 +54,7 @@ namespace AuthSystem.Tests.Adapters
             var adapter = new PostgresUserAdapter(connection);
 
             // Act
-            await adapter.CreateAsync(userToCreate);
+            await adapter.CreateUserAsync(userToCreate);
             var readUser = await adapter.GetUserByUsernameAsync(userToCreate.Username);
 
             // Assert
@@ -73,8 +73,8 @@ namespace AuthSystem.Tests.Adapters
             var adapter = new PostgresUserAdapter(connection);
 
             // Act
-            await adapter.CreateAsync(initialUser);
-            await adapter.UpdateAsync(updatedUser);
+            await adapter.CreateUserAsync(initialUser);
+            await adapter.UpdateUserAsync(updatedUser);
             var readUser = await adapter.GetUserByIdAsync(updatedUser.Id);
 
             // Assert
@@ -93,8 +93,8 @@ namespace AuthSystem.Tests.Adapters
             var adapter = new PostgresUserAdapter(connection);
 
             // Act
-            await adapter.CreateAsync(initialUser);
-            var numUpdated = await adapter.UpdateAsync(updatedUser);
+            await adapter.CreateUserAsync(initialUser);
+            var numUpdated = await adapter.UpdateUserAsync(updatedUser);
 
             // Assert
             Assert.AreEqual(1, numUpdated);
@@ -109,7 +109,7 @@ namespace AuthSystem.Tests.Adapters
             var adapter = new PostgresUserAdapter(connection);
 
             // Act
-            await adapter.CreateAsync(user);
+            await adapter.CreateUserAsync(user);
             var isUnique = await adapter.IsUsernameUniqueAsync(user.Username);
 
             // Assert

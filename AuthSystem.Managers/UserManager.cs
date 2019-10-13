@@ -41,7 +41,7 @@ namespace AuthSystem.Managers
 
             var user = new User(id, username, PasswordService.GeneratePasswordHashAndSalt(password));
 
-            await Adapter.CreateAsync(user);
+            await Adapter.CreateUserAsync(user);
 
             return UserCreated.From(id);
         }
@@ -65,7 +65,7 @@ namespace AuthSystem.Managers
             var newUserData = new User(existingUser.Value.Id, existingUser.Value.Username, newPasswordHash);
             
             // TODO - check if return == 1, throw error if not?
-            await Adapter.UpdateAsync(newUserData);
+            await Adapter.UpdateUserAsync(newUserData);
 
             return ChangePasswordResult.PasswordChanged;
         }

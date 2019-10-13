@@ -8,8 +8,8 @@ namespace AuthSystem.Interfaces.Adapters
     {
         Task<User?> GetUserByIdAsync(UserId userId);
         Task<User?> GetUserByUsernameAsync(Username username);
-        Task CreateAsync(User newUser);
-        Task<int> UpdateAsync(User newUser);
+        Task CreateUserAsync(User newUser);
+        Task<int> UpdateUserAsync(User newUser);
         Task<bool> IsUsernameUniqueAsync(Username username);
     }
 }

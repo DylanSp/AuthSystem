@@ -17,7 +17,7 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
-        public async Task CreateAsync(User newUser)
+        public async Task CreateUserAsync(User newUser)
         {
             var insertUserQuery = @"INSERT INTO Users (Id, Username, Base64PasswordHash, Base64Salt)
                                     VALUES (@Id, @Username, @Hash, @Salt)";
@@ -91,7 +91,7 @@ namespace AuthSystem.Adapters
             }
         }
 
-        public async Task<int> UpdateAsync(User newUser)
+        public async Task<int> UpdateUserAsync(User newUser)
         {
             var updateQuery = @"UPDATE Users
                                 SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt
