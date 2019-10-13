@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AuthSystem
 {
+    // TODO - make Users/Username column in DB have a UNIQUE constraint?
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - in UserManager, make (check for username uniqueness +  user creation) atomic to avoid race conditions?
     // TODO - implement adapters for resources, permission grants
