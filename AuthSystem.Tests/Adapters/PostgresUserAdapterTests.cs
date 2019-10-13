@@ -74,12 +74,30 @@ namespace AuthSystem.Tests.Adapters
 
             // Act
             await adapter.CreateAsync(initialUser);
-            await adapter.UpdateAsync(initialUser);
+            await adapter.UpdateAsync(updatedUser);
             var readUser = await adapter.GetUserByIdAsync(updatedUser.Id);
 
             // Assert
             Assert.AreNotEqual(initialUser, readUser.Value);
             Assert.AreEqual(updatedUser, readUser.Value);
+        }
+
+        [TestMethod]
+        [TestCategory("IntegrationTest")]
+        public async Task Update_OfOneUser_ReturnsOne()
+        {
+            // Arrange
+            var initialUser = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), new HashedPassword(Base64Hash.From("someHash"), Base64Salt.From("someSalt")));
+            var updatedUser = new User(initialUser.Id, initialUser.Username, new HashedPassword(initialUser.HashedPassword.Base64PasswordHash, Base64Salt.From("someOtherSalt")));
+
+            var adapter = new PostgresUserAdapter(connection);
+
+            // Act
+            await adapter.CreateAsync(initialUser);
+            var numUpdated = await adapter.UpdateAsync(updatedUser);
+
+            // Assert
+            Assert.AreEqual(1, numUpdated);
         }
 
         [TestMethod]

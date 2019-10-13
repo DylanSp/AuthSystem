@@ -93,7 +93,18 @@ namespace AuthSystem.Adapters
 
         public async Task<int> UpdateAsync(User newUser)
         {
-            throw new NotImplementedException();
+            var updateQuery = @"UPDATE Users
+                                SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt
+                                WHERE Id = @Id";
+            using (var command = new NpgsqlCommand(updateQuery, Connection))
+            {
+                command.Parameters.AddWithValue("Id", newUser.Id.Value);
+                command.Parameters.AddWithValue("Username", newUser.Username.Value);
+                command.Parameters.AddWithValue("Hash", newUser.HashedPassword.Base64PasswordHash.Value);
+                command.Parameters.AddWithValue("Salt", newUser.HashedPassword.Base64Salt.Value);
+
+                return await command.ExecuteNonQueryAsync();
+            }
         }
     }
 }
