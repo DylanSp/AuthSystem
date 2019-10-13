@@ -27,6 +27,5 @@ namespace AuthSystem.Interfaces.Managers
         Task<bool> ValidatePasswordAsync(Username username, PlaintextPassword password);
         Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(Username username, PlaintextPassword password);
         Task<ChangePasswordResult> ChangePasswordAsync(UserId userId, PlaintextPassword oldPassword, PlaintextPassword newPassword);
-        Task<OneOf<UsernameDoesNotExist, UserIdReturned>> GetIdForUsername(Username username);
     }
 }

@@ -69,19 +69,5 @@ namespace AuthSystem.Managers
 
             return ChangePasswordResult.PasswordChanged;
         }
-
-        public async Task<OneOf<UsernameDoesNotExist, UserIdReturned>> GetIdForUsername(Username username)
-        {
-            var user = await Adapter.GetUserByUsernameAsync(username);
-            if (user.HasValue)
-            {
-                return UserIdReturned.From(user.Value.Id);
-            }
-            else
-            {
-                return new UsernameDoesNotExist();
-            }
-        }
-
     }
 }
