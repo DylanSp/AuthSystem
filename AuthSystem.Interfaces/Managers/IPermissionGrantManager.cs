@@ -1,14 +1,19 @@
 ﻿using AuthSystem.Data;
+using OneOf;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Interfaces.Managers
 {
+    // CreatePermissionGrant return types
+    public class UnableToGrantPermission { }
+    public class PermissionGrantCreated { }
+
     public interface IPermissionGrantManager
     {
-        Task<PermissionGrantId> CreatePermissionGrantAsync(UserId userId, ResourceId resourceId, PermissionType permission);    // TODO - return type? return differently if user/resource don't exist? do we need to return created permissionId?
-        Task DeletePermissionGrantAsync(PermissionGrantId permissionId);  // TODO - return type? return differently if permission doesn't exist?
-        Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission);   // TODO - return type? return differently if user/resource don't exist?
+        Task<OneOf<UnableToGrantPermission, PermissionGrantCreated>> CreatePermissionGrantAsync(UserId userId, ResourceId resourceId, PermissionType permission);
+        Task DeletePermissionGrantAsync(PermissionGrantId permissionId);
+        Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission);
         Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(UserId userId);
     }
 }
