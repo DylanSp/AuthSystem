@@ -1,7 +1,6 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
-using OneOf;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,86 +11,56 @@ namespace AuthSystem.Managers
     public class ResourceManager : IResourceManager
     {
         private IResourceAdapter Adapter { get; }
-        private IUserManager UserManager { get; }
         private IPermissionGrantManager PermissionGrantManager { get; }
 
-        public ResourceManager(IResourceAdapter adapter, IUserManager userManager, IPermissionGrantManager permissionGrantManager)
+        public ResourceManager(IResourceAdapter adapter, IPermissionGrantManager permissionGrantManager)
         {
             Adapter = adapter;
-            UserManager = userManager;
             PermissionGrantManager = permissionGrantManager;
         }
 
-        public async Task<OneOf<CreatingUserDoesNotExist, ResourceCreated>> CreateResourceAsync(ResourceValue value, Username username)
+        public async Task<ResourceId> CreateResourceAsync(ResourceValue value, UserId userId)
         {
-            var possibleUserId = await UserManager.GetIdForUsername(username);
-            return await possibleUserId.Match<Task<OneOf<CreatingUserDoesNotExist, ResourceCreated>>>(
-                async usernameDoesNotExist => await Task.FromResult(new CreatingUserDoesNotExist()),
-                async userId =>
-                {
-                    var resourceId = ResourceId.From(Guid.NewGuid());
-                    var resource = new Resource(resourceId, value);
-                    await Adapter.CreateResourceAsync(resource);
+            var resourceId = ResourceId.From(Guid.NewGuid());
+            var resource = new Resource(resourceId, value);
+            await Adapter.CreateResourceAsync(resource);
 
-                    await PermissionGrantManager.CreatePermissionGrantAsync(userId.Value, resourceId, PermissionType.Read);
-                    await PermissionGrantManager.CreatePermissionGrantAsync(userId.Value, resourceId, PermissionType.Write);
+            await PermissionGrantManager.CreatePermissionGrantAsync(userId, resourceId, PermissionType.Read);
+            await PermissionGrantManager.CreatePermissionGrantAsync(userId, resourceId, PermissionType.Write);
 
-                    return ResourceCreated.From(resourceId);
-                }
-            );
+            return resourceId;
         }
 
-        public async Task<IEnumerable<Resource>> GetAllResourcesAsync(Username username)
+        public async Task<IEnumerable<Resource>> GetAllResourcesAsync(UserId userId)
         {
-            var possibleUser = await UserManager.GetIdForUsername(username);
-            return await possibleUser.Match<Task<IEnumerable<Resource>>>(
-                async usernameDoesNotExist => await Task.FromResult(new List<Resource>()),
-                async userId =>
-                {
-                    var grants = await PermissionGrantManager.GetAllPermissionsForUserAsync(userId.Value);
-                    var allResources = await Adapter.GetAllResourcesAsync();
-                    var allowedResources = from resource in allResources
-                                           join grant in grants
-                                                on resource.Id equals grant.ResourceId
-                                           where grant.UserId == userId.Value && grant.PermissionType == PermissionType.Read
-                                           select resource;
-                    return allowedResources;
-                }
-            );
+            var grants = await PermissionGrantManager.GetAllPermissionsForUserAsync(userId);
+            var allResources = await Adapter.GetAllResourcesAsync();
+            var allowedResources = from resource in allResources
+                                    join grant in grants
+                                        on resource.Id equals grant.ResourceId
+                                    where grant.UserId == userId && grant.PermissionType == PermissionType.Read
+                                    select resource;
+            return allowedResources;
         }
 
-        public async Task<Resource?> GetResourceAsync(ResourceId resourceId, Username username)
+        public async Task<Resource?> GetResourceAsync(ResourceId resourceId, UserId userId)
         {
-            var possibleUser = await UserManager.GetIdForUsername(username);
-            return await possibleUser.Match(
-                async usernameDoesNotExist => await Task.FromResult<Resource?>(null),
-                async userId =>
-                {
-                    var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, resourceId, PermissionType.Read);
-                    return hasPermission ? await Adapter.GetResourceAsync(resourceId) : null;
-                }
-            );
+            var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId, resourceId, PermissionType.Read);
+            return hasPermission ? await Adapter.GetResourceAsync(resourceId) : null;
         }
 
-        public async Task<UpdateResourceResult> UpdateResourceAsync(Resource newResource, Username username)
+        public async Task<UpdateResourceResult> UpdateResourceAsync(Resource newResource, UserId userId)
         {
-            var possibleUser = await UserManager.GetIdForUsername(username);
-            return await possibleUser.Match(
-                async usernameDoesNotExist => await Task.FromResult(UpdateResourceResult.UserDoesNotHavePermission),
-                async userId =>
-                {
-                    var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId.Value, newResource.Id, PermissionType.Write);
-                    if (hasPermission)
-                    {
-                        await Adapter.UpdateResourceAsync(newResource);
-                        return UpdateResourceResult.ResourceUpdated;
-                    }
-                    else
-                    {
-                        return UpdateResourceResult.UserDoesNotHavePermission;
-                    }
-                }
-            );
+            var hasPermission = await PermissionGrantManager.CheckIfUserHasPermissionAsync(userId, newResource.Id, PermissionType.Write);
+            if (hasPermission)
+            {
+                await Adapter.UpdateResourceAsync(newResource);
+                return UpdateResourceResult.ResourceUpdated;
+            }
+            else
+            {
+                return UpdateResourceResult.UserDoesNotHavePermission;
+            }
         }
     }
 }

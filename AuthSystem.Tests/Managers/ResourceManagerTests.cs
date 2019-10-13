@@ -16,23 +16,6 @@ namespace AuthSystem.Tests.Managers
     {
         [TestMethod]
         [TestCategory("UnitTest")]
-        public async Task GetResource_ForNonexistentUser_ReturnsNull()
-        {
-            // Arrange
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
-
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
-
-            // Act
-            var result = await resourceManager.GetResourceAsync(ResourceId.From(Guid.NewGuid()), Username.From("someUser"));
-
-            // Assert
-            Assert.IsNull(result);
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
         public async Task GetResource_ForUserWithoutReadPermission_ReturnsNull()
         {
             // Arrange
@@ -43,16 +26,14 @@ namespace AuthSystem.Tests.Managers
             adapter.GetResourceAsync(Arg.Any<ResourceId>()).Returns(new Resource());
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Carl"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, resourceId, PermissionType.Read).Returns(false);
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            var result = await resourceManager.GetResourceAsync(resourceId, user.Username);
+            var result = await resourceManager.GetResourceAsync(resourceId, user.Id);
 
             // Assert
             Assert.IsNull(result);
@@ -69,37 +50,18 @@ namespace AuthSystem.Tests.Managers
             adapter.GetResourceAsync(resource.Id).Returns(resource);
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Carl"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, resource.Id, PermissionType.Read).Returns(true);
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            var result = await resourceManager.GetResourceAsync(resource.Id, user.Username);
+            var result = await resourceManager.GetResourceAsync(resource.Id, user.Id);
 
             // Assert
             Assert.IsNotNull(result);
             Assert.AreEqual(resource, result.Value);
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
-        public async Task GetAllResources_ForNonexistentUser_ReturnsEmptyList()
-        {
-            // Arrange
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
-
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
-
-            // Act
-            var result = await resourceManager.GetAllResourcesAsync(Username.From("Diana"));
-
-            // Assert
-            Assert.AreEqual(0, result.Count());
         }
 
         [TestMethod]
@@ -112,16 +74,14 @@ namespace AuthSystem.Tests.Managers
             adapter.GetAllResourcesAsync().Returns(new List<Resource> { resource });
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Eric"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.GetAllPermissionsForUserAsync(user.Id).Returns(new List<PermissionGrant>());
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            var result = await resourceManager.GetAllResourcesAsync(user.Username);
+            var result = await resourceManager.GetAllResourcesAsync(user.Id);
 
             // Assert
             Assert.AreEqual(0, result.Count());
@@ -137,17 +97,15 @@ namespace AuthSystem.Tests.Managers
             adapter.GetAllResourcesAsync().Returns(new List<Resource> { resource });
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Eric"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             var grant = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
             permissionGrantManager.GetAllPermissionsForUserAsync(user.Id).Returns(new List<PermissionGrant> { grant });
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            var result = await resourceManager.GetAllResourcesAsync(user.Username);
+            var result = await resourceManager.GetAllResourcesAsync(user.Id);
 
             // Assert
             Assert.AreEqual(1, result.Count());
@@ -166,67 +124,21 @@ namespace AuthSystem.Tests.Managers
 
             var queriedUser = new User(UserId.From(Guid.NewGuid()), Username.From("Faith"), new HashedPassword());
             var otherUser = new User(UserId.From(Guid.NewGuid()), Username.From("NotBeingQueried"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(queriedUser.Username).Returns(UserIdReturned.From(queriedUser.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             var grantToQueriedUser = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), queriedUser.Id, permittedResource.Id, PermissionType.Read);
             var grantToOtherUser = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), otherUser.Id, nonPermittedResource.Id, PermissionType.Read);
             permissionGrantManager.GetAllPermissionsForUserAsync(queriedUser.Id).Returns(new List<PermissionGrant> { grantToQueriedUser, grantToOtherUser });
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            var result = await resourceManager.GetAllResourcesAsync(queriedUser.Username);
+            var result = await resourceManager.GetAllResourcesAsync(queriedUser.Id);
 
             // Assert
             Assert.AreEqual(1, result.Count());
             Assert.IsTrue(result.Contains(permittedResource));
             Assert.IsFalse(result.Contains(nonPermittedResource));
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
-        public async Task CreateResource_ForNonexistentUser_ReturnsError()
-        {
-            // Arrange
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
-
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
-
-            // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someValue"), Username.From("someUser"));
-
-            // Assert
-            result.Switch(
-                creatingUserDoesNotExist => { },
-                resourceCreated => throw new Exception("Test failed")
-            );
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
-        public async Task CreateResource_ForValidUser_ReturnsResourceId()
-        {
-            // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Gordon"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
-
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
-
-            // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
-
-            // Assert
-            result.Switch(
-                creatingUserDoesNotExist => throw new Exception("Test failed"),
-                resourceCreated =>
-                {
-                    Assert.IsInstanceOfType(resourceCreated.Value, typeof(ResourceId));
-                }
-            );
         }
 
         [TestMethod]
@@ -237,22 +149,14 @@ namespace AuthSystem.Tests.Managers
             var adapter = Substitute.For<IResourceAdapter>();
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Hailey"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
-            var resourceManager = new ResourceManager(adapter, userManager, Substitute.For<IPermissionGrantManager>());
+            var resourceManager = new ResourceManager(adapter, Substitute.For<IPermissionGrantManager>());
 
             // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+            await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
 
             // Assert
-            result.Switch(
-                creatingUserDoesNotExist => throw new Exception("Test failed"),
-                resourceCreated =>
-                {
-                    adapter.Received().CreateResourceAsync(Arg.Any<Resource>());
-                }
-            );
+            await adapter.Received().CreateResourceAsync(Arg.Any<Resource>());
         }
 
         [TestMethod]
@@ -261,24 +165,16 @@ namespace AuthSystem.Tests.Managers
         {
             // Arrange
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Iago"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
 
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
 
             // Assert
-            result.Switch(
-                creatingUserDoesNotExist => throw new Exception("Test failed"),
-                resourceCreated =>
-                {
-                    permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, resourceCreated.Value, PermissionType.Read);
-                }
-            );
+            await permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, result, PermissionType.Read);
         }
 
         [TestMethod]
@@ -287,41 +183,16 @@ namespace AuthSystem.Tests.Managers
         {
             // Arrange
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Jane"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
 
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Username);
+            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
 
             // Assert
-            result.Switch(
-                creatingUserDoesNotExist => throw new Exception("Test failed"),
-                resourceCreated =>
-                {
-                    permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, resourceCreated.Value, PermissionType.Write);
-                }
-            );
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
-        public async Task UpdateResource_ForNonexistentUser_ReturnsNotPermitted()
-        {
-            // Arrange
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(Arg.Any<Username>()).Returns(new UsernameDoesNotExist());
-
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, Substitute.For<IPermissionGrantManager>());
-
-            // Act
-            var result = await resourceManager.UpdateResourceAsync(new Resource(), Username.From("Kate"));
-
-            // Assert
-            Assert.AreEqual(UpdateResourceResult.UserDoesNotHavePermission, result);
+            await permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, result, PermissionType.Write);
         }
 
         [TestMethod]
@@ -333,16 +204,14 @@ namespace AuthSystem.Tests.Managers
             var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Lawrence"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(false);
 
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.UpdateResourceAsync(newResource, user.Username);
+            var result = await resourceManager.UpdateResourceAsync(newResource, user.Id);
 
             // Assert
             Assert.AreEqual(UpdateResourceResult.UserDoesNotHavePermission, result);
@@ -357,16 +226,14 @@ namespace AuthSystem.Tests.Managers
             var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);
 
-            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.UpdateResourceAsync(newResource, user.Username);
+            var result = await resourceManager.UpdateResourceAsync(newResource, user.Id);
 
             // Assert
             Assert.AreEqual(UpdateResourceResult.ResourceUpdated, result);
@@ -383,16 +250,14 @@ namespace AuthSystem.Tests.Managers
             var adapter = Substitute.For<IResourceAdapter>();
 
             var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), new HashedPassword());
-            var userManager = Substitute.For<IUserManager>();
-            userManager.GetIdForUsername(user.Username).Returns(UserIdReturned.From(user.Id));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);
 
-            var resourceManager = new ResourceManager(adapter, userManager, permissionGrantManager);
+            var resourceManager = new ResourceManager(adapter, permissionGrantManager);
 
             // Act
-            await resourceManager.UpdateResourceAsync(newResource, user.Username);
+            await resourceManager.UpdateResourceAsync(newResource, user.Id);
 
             // Assert
             await adapter.Received().UpdateResourceAsync(newResource);
