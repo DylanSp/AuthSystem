@@ -13,7 +13,5 @@ namespace AuthSystem
     // TODO - add a permission for managing permissions on a resource (grant to resource creator, admin)
     // TODO - need to autocreate admin user in DB in a migration (though how to handle password? default password that gets changed?)
     // TODO - how to grant permission-changing permission to admin automatically? isAdmin column in the DB, look up all users with it set, give them perms?
-    // TODO - CI
-    // TODO - unit tests - dotnet test --filter TestCategory=UnitTest
     // TODO - integration tests spin up Postgres container, run migrations + dotnet test --filter TestCategory=IntegrationTest ?
 }
