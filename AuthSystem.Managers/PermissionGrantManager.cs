@@ -1,4 +1,5 @@
-﻿using AuthSystem.Data;
+﻿using System;
+using AuthSystem.Data;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
 using OneOf;
@@ -24,7 +25,9 @@ namespace AuthSystem.Managers
         public async Task<OneOf<UnableToGrantPermission, PermissionGrantCreated>> CreatePermissionGrantAsync(UserId userId, ResourceId resourceId, PermissionType permission)
         {
             // TODO - catch exceptions, return UnableToGrantPermission in that case? or handle that at Adapter level?
-            await Adapter.CreatePermissionGrantAsync(userId, resourceId, permission);
+            var id = PermissionGrantId.From(Guid.NewGuid());
+            var grant = new PermissionGrant(id, userId, resourceId, permission);
+            await Adapter.CreatePermissionGrantAsync(grant);
             return new PermissionGrantCreated();
         }
 
