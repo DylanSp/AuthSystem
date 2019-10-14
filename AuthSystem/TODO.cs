@@ -8,7 +8,6 @@ namespace AuthSystem
     // TODO - make Users/Username column in DB have a UNIQUE constraint?
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - in UserManager, make (check for username uniqueness +  user creation) atomic to avoid race conditions?
-    // TODO - implement adapters for resources, permission grants
     // TODO - logging with Serilog
     // TODO - add a permission for managing permissions on a resource (grant to resource creator, admin)
     // TODO - need to autocreate admin user in DB in a migration (though how to handle password? default password that gets changed?)
