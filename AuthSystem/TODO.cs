@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AuthSystem
 {
+    // TODO - make sure all projects have nullable reference types
     // TODO - API will need to be versioned - see https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
     // TODO - make Users/Username column in DB have a UNIQUE constraint?
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
