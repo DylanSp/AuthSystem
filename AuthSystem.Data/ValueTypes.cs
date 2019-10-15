@@ -34,11 +34,13 @@ namespace AuthSystem.Data
     {
     }
 
+    // TODO - do I need this type converter? don't expect this to be parameter in any controller method
     [TypeConverter(typeof(StringValueTypeConverter<Base64Hash>))]
     public class Base64Hash : ValueOf<string, Base64Hash>
     {
     }
 
+    // TODO - do I need this type converter? don't expect this to be parameter in any controller method
     [TypeConverter(typeof(StringValueTypeConverter<Base64Salt>))]
     public class Base64Salt : ValueOf<string, Base64Salt>
     {
