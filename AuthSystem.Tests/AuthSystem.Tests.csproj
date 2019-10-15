@@ -20,6 +20,7 @@
   <ItemGroup>
     <ProjectReference Include="..\AuthSystem.Adapters\AuthSystem.Adapters.csproj" />
     <ProjectReference Include="..\AuthSystem.Managers\AuthSystem.Managers.csproj" />
+    <ProjectReference Include="..\AuthSystem.Services\AuthSystem.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
