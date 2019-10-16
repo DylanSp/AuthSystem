@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 
 namespace AuthSystem
 {
+    // TODO - adapters should not take raw connection; should take IConnectionContext which has a CreateCommand() method, PostgresConnectionContext implements IDisposable, DI container makes sure context.Dispose() gets called
     // TODO - make sure all projects have nullable reference types
     // TODO - API will need to be versioned - see https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
     // TODO - make Users/Username column in DB have a UNIQUE constraint?
