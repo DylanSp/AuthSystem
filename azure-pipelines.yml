@@ -18,3 +18,22 @@ steps:
     command: test
     projects:  '**/*.Tests/*.csproj'
     arguments: '--filter TestCategory=UnitTest'
+
+- task: DockerInstaller@0
+  displayName: Install Docker
+  inputs:
+    dockerVersion: 19.03.3-ce
+    releaseType: stable
+
+- task: Bash@3
+  displayName: Start and Initialize Postgres Container
+  inputs:
+    targetType: 'filePath'
+    filePath: 'AuthSystem.Scripts/initialize_postgres.sh'
+
+- task: DotNetCoreCLI@2
+  displayName: Integration Tests
+  inputs:
+    command: test
+    projects: '**/*.Tests/*.csproj'
+    arguments: '--filter TestCategory=IntegrationTest'
