@@ -27,7 +27,7 @@ namespace AuthSystem.Managers
                 return false;
             }
 
-            return PasswordService.CheckIfPasswordMatchesHash(password, user.Value.HashedPassword);
+            return PasswordService.CheckIfPasswordMatchesHash(password, user.Value.SaltedHashedPassword);
         }
 
         public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(Username username, PlaintextPassword password)
@@ -55,7 +55,7 @@ namespace AuthSystem.Managers
             }
 
             var isOldPasswordCorrect =
-                PasswordService.CheckIfPasswordMatchesHash(oldPassword, existingUser.Value.HashedPassword);
+                PasswordService.CheckIfPasswordMatchesHash(oldPassword, existingUser.Value.SaltedHashedPassword);
             if (!isOldPasswordCorrect)
             {
                 return ChangePasswordResult.PasswordIncorrect;

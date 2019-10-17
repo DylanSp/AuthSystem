@@ -1,21 +1,26 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.Interfaces;
-using System;
+using Sodium;
 
 namespace AuthSystem.Services
 {
     public class PasswordService : IPasswordService
     {
-        public HashedPassword GeneratePasswordHashAndSalt(PlaintextPassword password)
+        private PasswordHash.StrengthArgon Strength { get; }
+
+        public PasswordService(PasswordHash.StrengthArgon strength)
         {
-            // TODO - implement
-            throw new NotImplementedException();
+            Strength = strength;
         }
 
-        public bool CheckIfPasswordMatchesHash(PlaintextPassword password, HashedPassword hash)
+        public SaltedHashedPassword GeneratePasswordHashAndSalt(PlaintextPassword password)
         {
-            // TODO - implement
-            throw new NotImplementedException();
+            return SaltedHashedPassword.From(PasswordHash.ArgonHashString(password.Value, Strength));
+        }
+
+        public bool CheckIfPasswordMatchesHash(PlaintextPassword password, SaltedHashedPassword hash)
+        {
+            return PasswordHash.ArgonHashStringVerify(hash.Value, password.Value);
         }
     }
 }

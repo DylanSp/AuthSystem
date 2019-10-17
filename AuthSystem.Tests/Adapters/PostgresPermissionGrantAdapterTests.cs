@@ -34,7 +34,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task CreateGrant_ThenCheckForThatGrant_ReturnsTrue()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), new HashedPassword(Base64Hash.From("someHash"), Base64Salt.From("someSalt")));
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection);
             await userAdapter.CreateUserAsync(user);
 
@@ -61,7 +61,7 @@ namespace AuthSystem.Tests.Adapters
             // Arrange
 
             // create grant
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), new HashedPassword(Base64Hash.From("someHash"), Base64Salt.From("someSalt")));
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection);
             await userAdapter.CreateUserAsync(user);
 
@@ -88,7 +88,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task GetAllPermissions_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), new HashedPassword(Base64Hash.From("someHash"), Base64Salt.From("someSalt")));
+            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection);
             await userAdapter.CreateUserAsync(user);
 

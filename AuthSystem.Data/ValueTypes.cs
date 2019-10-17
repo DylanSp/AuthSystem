@@ -34,13 +34,31 @@ namespace AuthSystem.Data
     {
     }
 
+    public class SaltedHashedPassword : ValueOf<string, SaltedHashedPassword>
+    {
+    }
+
+    // TODO - do I need this type converter? don't expect this to be parameter in any controller method
     [TypeConverter(typeof(StringValueTypeConverter<Base64Hash>))]
     public class Base64Hash : ValueOf<string, Base64Hash>
     {
     }
 
+    // TODO - do I need this type converter? don't expect this to be parameter in any controller method
     [TypeConverter(typeof(StringValueTypeConverter<Base64Salt>))]
     public class Base64Salt : ValueOf<string, Base64Salt>
+    {
+    }
+
+    public class IterationCount : ValueOf<int, IterationCount>
+    {
+    }
+
+    public class SaltLength : ValueOf<int, SaltLength>
+    {
+    }
+
+    public class KeyLength : ValueOf<int, KeyLength>
     {
     }
 }
