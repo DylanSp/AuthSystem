@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AuthSystem.Data;
-using AuthSystem.Interfaces;
+﻿using AuthSystem.Data;
 using AuthSystem.Services;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using NSubstitute;
 using Sodium;
 
 namespace AuthSystem.Tests
