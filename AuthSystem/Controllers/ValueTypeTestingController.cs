@@ -58,14 +58,5 @@ namespace AuthSystem.Controllers
             // testStruct.TestMember should equal 3, actually is 0
             return "ok";
         }
-
-        [HttpPost]
-        [Route("hashes")]
-        public ActionResult<string> TestDeserialization([FromBody] HashedPassword hashedPassword)
-        {
-            // given { "Base64PasswordHash": "hash", "Base64Salt": "salt" }
-            // should set values, actually gives validation error
-            return "ok";
-        }
     }
 }

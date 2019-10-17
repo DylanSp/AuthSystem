@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Sodium.Core" Version="1.2.0" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\AuthSystem.Data\AuthSystem.Data.csproj" />
     <ProjectReference Include="..\AuthSystem.Interfaces\AuthSystem.Interfaces.csproj" />
   </ItemGroup>

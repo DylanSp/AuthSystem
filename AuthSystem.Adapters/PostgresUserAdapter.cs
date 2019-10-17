@@ -19,14 +19,13 @@ namespace AuthSystem.Adapters
 
         public async Task CreateUserAsync(User newUser)
         {
-            var insertUserQuery = @"INSERT INTO Users (Id, Username, Base64PasswordHash, Base64Salt)
-                                    VALUES (@Id, @Username, @Hash, @Salt)";
+            var insertUserQuery = @"INSERT INTO Users (Id, Username, SaltedHash)
+                                    VALUES (@Id, @Username, @SaltedHash)";
             using (var command = new NpgsqlCommand(insertUserQuery, Connection))
             {
                 command.Parameters.AddWithValue("Id", newUser.Id.Value);
                 command.Parameters.AddWithValue("Username", newUser.Username.Value);
-                command.Parameters.AddWithValue("Hash", newUser.HashedPassword.Base64PasswordHash.Value);
-                command.Parameters.AddWithValue("Salt", newUser.HashedPassword.Base64Salt.Value);
+                command.Parameters.AddWithValue("SaltedHash", newUser.SaltedHashedPassword.Value);
 
                 await command.ExecuteNonQueryAsync();
             }
@@ -34,7 +33,7 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByIdAsync(UserId userId)
         {
-            var getUserQuery = @"SELECT Id, Username, Base64PasswordHash, Base64Salt
+            var getUserQuery = @"SELECT Id, Username, SaltedHash
                                  FROM Users
                                  WHERE Id = @Id";
             using (var command = new NpgsqlCommand(getUserQuery, Connection))
@@ -45,9 +44,8 @@ namespace AuthSystem.Adapters
                 {
                     var readId = (Guid) reader["Id"];
                     var username = (string)reader["Username"];
-                    var hash = (string)reader["Base64PasswordHash"];
-                    var salt = (string)reader["Base64Salt"];
-                    return new User(UserId.From(readId), Username.From(username), new HashedPassword(Base64Hash.From(hash), Base64Salt.From(salt)));
+                    var saltedHash = (string)reader["SaltedHash"];
+                    return new User(UserId.From(readId), Username.From(username), SaltedHashedPassword.From(saltedHash));
                 }
                 else
                 {
@@ -58,7 +56,7 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByUsernameAsync(Username username)
         {
-            var getUserQuery = @"SELECT Id, Username, Base64PasswordHash, Base64Salt
+            var getUserQuery = @"SELECT Id, Username, SaltedHash
                                  FROM Users
                                  WHERE Username = @Username";
             using (var command = new NpgsqlCommand(getUserQuery, Connection))
@@ -69,9 +67,8 @@ namespace AuthSystem.Adapters
                 {
                     var id = (Guid)reader["Id"];
                     var readUsername = (string)reader["Username"];
-                    var hash = (string)reader["Base64PasswordHash"];
-                    var salt = (string)reader["Base64Salt"];
-                    return new User(UserId.From(id), Username.From(readUsername), new HashedPassword(Base64Hash.From(hash), Base64Salt.From(salt)));
+                    var saltedHash = (string)reader["SaltedHash"];
+                    return new User(UserId.From(id), Username.From(readUsername), SaltedHashedPassword.From(saltedHash));
                 }
                 else
                 {
@@ -94,14 +91,13 @@ namespace AuthSystem.Adapters
         public async Task<int> UpdateUserAsync(User newUser)
         {
             var updateQuery = @"UPDATE Users
-                                SET Username = @Username, Base64PasswordHash = @Hash, Base64Salt = @Salt
+                                SET Username = @Username, SaltedHash = @SaltedHash
                                 WHERE Id = @Id";
             using (var command = new NpgsqlCommand(updateQuery, Connection))
             {
                 command.Parameters.AddWithValue("Id", newUser.Id.Value);
                 command.Parameters.AddWithValue("Username", newUser.Username.Value);
-                command.Parameters.AddWithValue("Hash", newUser.HashedPassword.Base64PasswordHash.Value);
-                command.Parameters.AddWithValue("Salt", newUser.HashedPassword.Base64Salt.Value);
+                command.Parameters.AddWithValue("SaltedHash", newUser.SaltedHashedPassword.Value);
 
                 return await command.ExecuteNonQueryAsync();
             }

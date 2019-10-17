@@ -7,6 +7,7 @@ using AuthSystem.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
+using Sodium;
 
 namespace AuthSystem.Tests
 {
@@ -15,66 +16,10 @@ namespace AuthSystem.Tests
     {
         [TestMethod]
         [TestCategory("UnitTest")]
-        public void GenerateHashAndSalt_ReturnsSalt_WithNumberOfBytesEqualToSaltLengthParameter()
-        {
-            // Arrange
-            var iterationCount = 10_000;
-            var saltLength = 16;
-            var keyLength = 64;
-            var parameters = new KeyDerivationParameters(KeyDerivationPrf.HMACSHA512,
-                IterationCount.From(iterationCount), SaltLength.From(saltLength), KeyLength.From(keyLength));
-
-            var rng = Substitute.For<ICryptoRng>();
-            rng.GetRandomBytes(Arg.Any<int>()).Returns(args => new byte[args.Arg<int>()]);
-
-            var service = new PasswordService(parameters, rng);
-
-            // Act
-            var hash = service.GeneratePasswordHashAndSalt(PlaintextPassword.From("somePassword"));
-
-            // Assert
-            Assert.AreEqual(saltLength, Convert.FromBase64String(hash.Base64Salt.Value).Length);
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
-        public void GenerateHashAndSalt_ReturnsHash_WithNumberOfBytesEqualToKeyLengthParameter()
-        {
-            // Arrange
-            var iterationCount = 10_000;
-            var saltLength = 16;
-            var keyLength = 64;
-            var parameters = new KeyDerivationParameters(KeyDerivationPrf.HMACSHA512,
-                IterationCount.From(iterationCount), SaltLength.From(saltLength), KeyLength.From(keyLength));
-
-            var rng = Substitute.For<ICryptoRng>();
-            rng.GetRandomBytes(Arg.Any<int>()).Returns(args => new byte[args.Arg<int>()]);
-
-            var service = new PasswordService(parameters, rng);
-
-            // Act
-            var hash = service.GeneratePasswordHashAndSalt(PlaintextPassword.From("somePassword"));
-
-            // Assert
-            Assert.AreEqual(keyLength, Convert.FromBase64String(hash.Base64PasswordHash.Value).Length);
-        }
-
-        [TestMethod]
-        [TestCategory("UnitTest")]
         public void GenerateHashAndSalt_ThenCheckingSamePassword_ReturnsTrue()
         {
             // Arrange
-            var iterationCount = 10_000;
-            var saltLength = 16;
-            var keyLength = 64;
-            var parameters = new KeyDerivationParameters(KeyDerivationPrf.HMACSHA512,
-                IterationCount.From(iterationCount), SaltLength.From(saltLength), KeyLength.From(keyLength));
-
-            var rng = Substitute.For<ICryptoRng>();
-            rng.GetRandomBytes(Arg.Any<int>()).Returns(args => new byte[args.Arg<int>()]);
-
-            var service = new PasswordService(parameters, rng);
-
+            var service = new PasswordService(PasswordHash.StrengthArgon.Interactive);
             var password = PlaintextPassword.From("somePass");
 
             // Act
@@ -90,16 +35,7 @@ namespace AuthSystem.Tests
         public void GenerateHashAndSalt_ThenCheckingOtherPassword_ReturnsFalse()
         {
             // Arrange
-            var iterationCount = 10_000;
-            var saltLength = 16;
-            var keyLength = 64;
-            var parameters = new KeyDerivationParameters(KeyDerivationPrf.HMACSHA512,
-                IterationCount.From(iterationCount), SaltLength.From(saltLength), KeyLength.From(keyLength));
-
-            var rng = Substitute.For<ICryptoRng>();
-            rng.GetRandomBytes(Arg.Any<int>()).Returns(args => new byte[args.Arg<int>()]);
-
-            var service = new PasswordService(parameters, rng);
+            var service = new PasswordService(PasswordHash.StrengthArgon.Interactive);
 
             var password = PlaintextPassword.From("somePass");
             var otherPass = PlaintextPassword.From("otherPass");
