@@ -14,7 +14,7 @@ namespace AuthSystem.Tests.Adapters
     [TestClass]
     public class PostgresResourceAdapterTests
     {
-        private NpgsqlConnection connection;
+        private NpgsqlConnection? connection;
 
         [TestInitialize]
         public async Task Setup()
@@ -28,7 +28,7 @@ namespace AuthSystem.Tests.Adapters
         [TestCleanup]
         public async Task Teardown()
         {
-            await connection.DisposeAsync();
+            await connection!.DisposeAsync();
         }
 
         [TestMethod]
@@ -37,7 +37,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var resourceToCreate = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From(Guid.NewGuid().ToString()));
-            var adapter = new PostgresResourceAdapter(connection);
+            var adapter = new PostgresResourceAdapter(connection!);
 
             // Act
             await adapter.CreateResourceAsync(resourceToCreate);
@@ -57,7 +57,7 @@ namespace AuthSystem.Tests.Adapters
             var initialResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("initial"));
             var updatedResource = new Resource(initialResource.Id, ResourceValue.From("updated"));
 
-            var adapter = new PostgresResourceAdapter(connection);
+            var adapter = new PostgresResourceAdapter(connection!);
 
             // Act
             await adapter.CreateResourceAsync(initialResource);
@@ -77,7 +77,7 @@ namespace AuthSystem.Tests.Adapters
             var initialResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("initial"));
             var updatedResource = new Resource(initialResource.Id, ResourceValue.From("updated"));
 
-            var adapter = new PostgresResourceAdapter(connection);
+            var adapter = new PostgresResourceAdapter(connection!);
 
             // Act
             await adapter.CreateResourceAsync(initialResource);
@@ -95,7 +95,7 @@ namespace AuthSystem.Tests.Adapters
             var resource1 = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("value1"));
             var resource2 = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("value2"));
 
-            var adapter = new PostgresResourceAdapter(connection);
+            var adapter = new PostgresResourceAdapter(connection!);
 
             // Act
             await adapter.CreateResourceAsync(resource1);

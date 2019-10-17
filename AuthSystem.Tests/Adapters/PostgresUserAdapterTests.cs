@@ -11,7 +11,7 @@ namespace AuthSystem.Tests.Adapters
     [TestClass]
     public class PostgresUserAdapterTests
     {
-        private NpgsqlConnection connection;
+        private NpgsqlConnection? connection;
 
         [TestInitialize]
         public async Task Setup()
@@ -25,7 +25,7 @@ namespace AuthSystem.Tests.Adapters
         [TestCleanup]
         public async Task Teardown()
         {
-            await connection.DisposeAsync();
+            await connection!.DisposeAsync();
         }
 
         [TestMethod]
@@ -34,7 +34,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var userToCreate = new User(UserId.From(Guid.NewGuid()), Username.From("Alfred"), SaltedHashedPassword.From("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection);
+            var adapter = new PostgresUserAdapter(connection!);
 
             // Act
             await adapter.CreateUserAsync(userToCreate);
@@ -51,7 +51,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var userToCreate = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection);
+            var adapter = new PostgresUserAdapter(connection!);
 
             // Act
             await adapter.CreateUserAsync(userToCreate);
@@ -70,7 +70,7 @@ namespace AuthSystem.Tests.Adapters
             var initialUser = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
             var updatedUser = new User(initialUser.Id, initialUser.Username, SaltedHashedPassword.From("someOtherSaltedHash"));
 
-            var adapter = new PostgresUserAdapter(connection);
+            var adapter = new PostgresUserAdapter(connection!);
 
             // Act
             await adapter.CreateUserAsync(initialUser);
@@ -90,7 +90,7 @@ namespace AuthSystem.Tests.Adapters
             var initialUser = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
             var updatedUser = new User(initialUser.Id, initialUser.Username, SaltedHashedPassword.From("someOtherSaltedHash"));
 
-            var adapter = new PostgresUserAdapter(connection);
+            var adapter = new PostgresUserAdapter(connection!);
 
             // Act
             await adapter.CreateUserAsync(initialUser);
@@ -106,7 +106,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var user = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection);
+            var adapter = new PostgresUserAdapter(connection!);
 
             // Act
             await adapter.CreateUserAsync(user);
