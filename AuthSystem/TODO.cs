@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace AuthSystem
+﻿namespace AuthSystem
 {
     // TODO - add GetAllPermissionsForResourceAsync(UserId userId, ResourceId resourceId) to IPermissionGrantManager; should require user has permission mgmt permission on resource
     // TODO - adapters should not take raw connection; should take IConnectionContext which has a CreateCommand() method, PostgresConnectionContext implements IDisposable, DI container makes sure context.Dispose() gets called
