@@ -4,9 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Tests.Adapters
@@ -36,7 +34,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task Save_ThenReadById_RoundTrips()
         {
             // Arrange
-            var resourceToCreate = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From(Guid.NewGuid().ToString()));
+            var resourceToCreate = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue(Guid.NewGuid().ToString()));
             var adapter = new PostgresResourceAdapter(connection!);
 
             // Act
@@ -54,8 +52,8 @@ namespace AuthSystem.Tests.Adapters
         public async Task Update_ThenRead_ReturnsUpdatedData()
         {
             // Arrange
-            var initialResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("initial"));
-            var updatedResource = new Resource(initialResource.Id, ResourceValue.From("updated"));
+            var initialResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("initial"));
+            var updatedResource = new Resource(initialResource.Id, new ResourceValue("updated"));
 
             var adapter = new PostgresResourceAdapter(connection!);
 
@@ -74,8 +72,8 @@ namespace AuthSystem.Tests.Adapters
         public async Task Update_OfOneResource_ReturnsOne()
         {
             // Arrange
-            var initialResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("initial"));
-            var updatedResource = new Resource(initialResource.Id, ResourceValue.From("updated"));
+            var initialResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("initial"));
+            var updatedResource = new Resource(initialResource.Id, new ResourceValue("updated"));
 
             var adapter = new PostgresResourceAdapter(connection!);
 
@@ -92,8 +90,8 @@ namespace AuthSystem.Tests.Adapters
         public async Task GetAllResources_WithMultipleResources_ReturnsAll()
         {
             // Arrange
-            var resource1 = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("value1"));
-            var resource2 = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("value2"));
+            var resource1 = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("value1"));
+            var resource2 = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("value2"));
 
             var adapter = new PostgresResourceAdapter(connection!);
 

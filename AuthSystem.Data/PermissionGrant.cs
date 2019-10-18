@@ -7,7 +7,7 @@
         Write = 2,
     }
 
-    public struct PermissionGrant
+    public readonly struct PermissionGrant
     {
         public PermissionGrantId Id { get; }
         public UserId UserId { get; }

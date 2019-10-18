@@ -21,7 +21,7 @@ namespace AuthSystem.Managers
 
         public async Task<ResourceId> CreateResourceAsync(ResourceValue value, UserId userId)
         {
-            var resourceId = ResourceId.From(Guid.NewGuid());
+            var resourceId = new ResourceId(Guid.NewGuid());
             var resource = new Resource(resourceId, value);
             await Adapter.CreateResourceAsync(resource);
 
@@ -38,7 +38,7 @@ namespace AuthSystem.Managers
             var allowedResources = from resource in allResources
                                     join grant in grants
                                         on resource.Id equals grant.ResourceId
-                                    where grant.UserId == userId && grant.PermissionType == PermissionType.Read
+                                    where grant.UserId.Equals(userId) && grant.PermissionType == PermissionType.Read
                                     select resource;
             return allowedResources;
         }

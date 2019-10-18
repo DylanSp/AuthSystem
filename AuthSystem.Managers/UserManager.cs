@@ -30,20 +30,20 @@ namespace AuthSystem.Managers
             return PasswordService.CheckIfPasswordMatchesHash(password, user.Value.SaltedHashedPassword);
         }
 
-        public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(Username username, PlaintextPassword password)
+        public async Task<UserId?> CreateUserAsync(Username username, PlaintextPassword password)
         {
-            var id = UserId.From(Guid.NewGuid());
+            var id = new UserId(Guid.NewGuid());
 
             if (!await Adapter.IsUsernameUniqueAsync(username))
             {
-                return new UsernameAlreadyExists();
+                return null;
             }
 
             var user = new User(id, username, PasswordService.GeneratePasswordHashAndSalt(password));
 
             await Adapter.CreateUserAsync(user);
 
-            return UserCreated.From(id);
+            return id;
         }
 
         public async Task<ChangePasswordResult> ChangePasswordAsync(UserId userId, PlaintextPassword oldPassword, PlaintextPassword newPassword)

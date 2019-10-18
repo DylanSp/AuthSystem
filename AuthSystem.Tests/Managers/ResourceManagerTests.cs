@@ -19,13 +19,13 @@ namespace AuthSystem.Tests.Managers
         public async Task GetResource_ForUserWithoutReadPermission_ReturnsNull()
         {
             // Arrange
-            var resourceId = ResourceId.From(Guid.NewGuid());
+            var resourceId = new ResourceId(Guid.NewGuid());
 
             // adapter needs to return something non-null so our assert can check the difference vs. failing to have permission
             var adapter = Substitute.For<IResourceAdapter>();
             adapter.GetResourceAsync(Arg.Any<ResourceId>()).Returns(new Resource());
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Carl"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Carl"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, resourceId, PermissionType.Read).Returns(false);
@@ -44,12 +44,12 @@ namespace AuthSystem.Tests.Managers
         public async Task GetResource_ForUserWithReadPermission_ReturnsResource()
         {
             // Arrange
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
 
             var adapter = Substitute.For<IResourceAdapter>();
             adapter.GetResourceAsync(resource.Id).Returns(resource);
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Carl"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Carl"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, resource.Id, PermissionType.Read).Returns(true);
@@ -69,11 +69,11 @@ namespace AuthSystem.Tests.Managers
         public async Task GetAllResources_ForUserWithNoPermissions_ReturnsEmptyList()
         {
             // Arrange
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
             var adapter = Substitute.For<IResourceAdapter>();
             adapter.GetAllResourcesAsync().Returns(new List<Resource> { resource });
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Eric"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Eric"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.GetAllPermissionsForUserAsync(user.Id).Returns(new List<PermissionGrant>());
@@ -92,14 +92,14 @@ namespace AuthSystem.Tests.Managers
         public async Task GetAllResources_ForUserWithReadPermissionsOnResource_ReturnsListWithThatResource()
         {
             // Arrange
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
             var adapter = Substitute.For<IResourceAdapter>();
             adapter.GetAllResourcesAsync().Returns(new List<Resource> { resource });
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Eric"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Eric"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
-            var grant = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
+            var grant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
             permissionGrantManager.GetAllPermissionsForUserAsync(user.Id).Returns(new List<PermissionGrant> { grant });
 
             var resourceManager = new ResourceManager(adapter, permissionGrantManager);
@@ -117,17 +117,17 @@ namespace AuthSystem.Tests.Managers
         public async Task GetAllResources_ForUserWithReadPermissionsOnSomeResource_ReturnsListWithOnlyPermittedResource()
         {
             // Arrange
-            var permittedResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
-            var nonPermittedResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("superSecret"));
+            var permittedResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
+            var nonPermittedResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("superSecret"));
             var adapter = Substitute.For<IResourceAdapter>();
             adapter.GetAllResourcesAsync().Returns(new List<Resource> { permittedResource, nonPermittedResource });
 
-            var queriedUser = new User(UserId.From(Guid.NewGuid()), Username.From("Faith"), SaltedHashedPassword.From("someSaltedHash"));
-            var otherUser = new User(UserId.From(Guid.NewGuid()), Username.From("NotBeingQueried"), SaltedHashedPassword.From("someSaltedHash"));
+            var queriedUser = new User(new UserId(Guid.NewGuid()), new Username("Faith"), new SaltedHashedPassword("someSaltedHash"));
+            var otherUser = new User(new UserId(Guid.NewGuid()), new Username("NotBeingQueried"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
-            var grantToQueriedUser = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), queriedUser.Id, permittedResource.Id, PermissionType.Read);
-            var grantToOtherUser = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), otherUser.Id, nonPermittedResource.Id, PermissionType.Read);
+            var grantToQueriedUser = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), queriedUser.Id, permittedResource.Id, PermissionType.Read);
+            var grantToOtherUser = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), otherUser.Id, nonPermittedResource.Id, PermissionType.Read);
             permissionGrantManager.GetAllPermissionsForUserAsync(queriedUser.Id).Returns(new List<PermissionGrant> { grantToQueriedUser, grantToOtherUser });
 
             var resourceManager = new ResourceManager(adapter, permissionGrantManager);
@@ -148,12 +148,12 @@ namespace AuthSystem.Tests.Managers
             // Arrange
             var adapter = Substitute.For<IResourceAdapter>();
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Hailey"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Hailey"), new SaltedHashedPassword("someSaltedHash"));
 
             var resourceManager = new ResourceManager(adapter, Substitute.For<IPermissionGrantManager>());
 
             // Act
-            await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
+            await resourceManager.CreateResourceAsync(new ResourceValue("someSecret"), user.Id);
 
             // Assert
             await adapter.Received().CreateResourceAsync(Arg.Any<Resource>());
@@ -164,14 +164,14 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateResource_ForValidUser_GivesUserReadPermissionsOnCreatedResource()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Iago"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Iago"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
 
             var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
+            var result = await resourceManager.CreateResourceAsync(new ResourceValue("someSecret"), user.Id);
 
             // Assert
             await permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, result, PermissionType.Read);
@@ -182,14 +182,14 @@ namespace AuthSystem.Tests.Managers
         public async Task CreateResource_ForValidUser_GivesUserWritePermissionsOnCreatedResource()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Jane"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Jane"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
 
             var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
 
             // Act
-            var result = await resourceManager.CreateResourceAsync(ResourceValue.From("someSecret"), user.Id);
+            var result = await resourceManager.CreateResourceAsync(new ResourceValue("someSecret"), user.Id);
 
             // Assert
             await permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, result, PermissionType.Write);
@@ -200,10 +200,10 @@ namespace AuthSystem.Tests.Managers
         public async Task UpdateResource_ForExistingUserWithoutPermission_ReturnsNotPermitted()
         {
             // Arrange
-            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
-            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+            var oldResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
+            var newResource = new Resource(oldResource.Id, new ResourceValue("someNewSecret"));
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Lawrence"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Lawrence"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(false);
@@ -222,10 +222,10 @@ namespace AuthSystem.Tests.Managers
         public async Task UpdateResource_ForExistingUserWithPermission_ReturnsSuccess()
         {
             // Arrange
-            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
-            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+            var oldResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
+            var newResource = new Resource(oldResource.Id, new ResourceValue("someNewSecret"));
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Matthew"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);
@@ -244,12 +244,12 @@ namespace AuthSystem.Tests.Managers
         public async Task UpdateResource_ForExistingUserWithPermission_CallsAdapterUpdateResource()
         {
             // Arrange
-            var oldResource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
-            var newResource = new Resource(oldResource.Id, ResourceValue.From("someNewSecret"));
+            var oldResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
+            var newResource = new Resource(oldResource.Id, new ResourceValue("someNewSecret"));
 
             var adapter = Substitute.For<IResourceAdapter>();
 
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Matthew"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Matthew"), new SaltedHashedPassword("someSaltedHash"));
 
             var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
             permissionGrantManager.CheckIfUserHasPermissionAsync(user.Id, oldResource.Id, PermissionType.Write).Returns(true);

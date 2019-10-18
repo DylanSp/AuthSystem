@@ -40,8 +40,8 @@ namespace AuthSystem.Adapters
                 var reader = await command.ExecuteReaderAsync();
                 while (await reader.ReadAsync())
                 {
-                    var id = ResourceId.From((Guid)reader["Id"]);
-                    var value = ResourceValue.From((string)reader["Value"]);
+                    var id = new ResourceId((Guid)reader["Id"]);
+                    var value = new ResourceValue((string)reader["Value"]);
                     allResources.Add(new Resource(id, value));
                 }
 
@@ -61,8 +61,8 @@ namespace AuthSystem.Adapters
                 var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    var id = ResourceId.From((Guid)reader["Id"]);
-                    var value = ResourceValue.From((string)reader["Value"]);
+                    var id = new ResourceId((Guid)reader["Id"]);
+                    var value = new ResourceValue((string)reader["Value"]);
                     return new Resource(id, value);
                 }
                 else

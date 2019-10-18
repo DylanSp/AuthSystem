@@ -2,8 +2,6 @@
 using AuthSystem.Interfaces.Adapters;
 using Npgsql;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
@@ -42,10 +40,10 @@ namespace AuthSystem.Adapters
                 var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    var readId = (Guid) reader["Id"];
-                    var username = (string)reader["Username"];
-                    var saltedHash = (string)reader["SaltedHash"];
-                    return new User(UserId.From(readId), Username.From(username), SaltedHashedPassword.From(saltedHash));
+                    var readId = new UserId((Guid)reader["Id"]);
+                    var username = new Username((string)reader["Username"]);
+                    var saltedHash = new SaltedHashedPassword((string)reader["SaltedHash"]);
+                    return new User(readId, username, saltedHash);
                 }
                 else
                 {
@@ -65,10 +63,10 @@ namespace AuthSystem.Adapters
                 var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
                 {
-                    var id = (Guid)reader["Id"];
-                    var readUsername = (string)reader["Username"];
-                    var saltedHash = (string)reader["SaltedHash"];
-                    return new User(UserId.From(id), Username.From(readUsername), SaltedHashedPassword.From(saltedHash));
+                    var id = new UserId((Guid)reader["Id"]);
+                    var readUsername = new Username((string)reader["Username"]);
+                    var saltedHash = new SaltedHashedPassword((string)reader["SaltedHash"]);
+                    return new User(id, readUsername, saltedHash);
                 }
                 else
                 {
