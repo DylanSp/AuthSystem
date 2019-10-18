@@ -1,0 +1,37 @@
+﻿AuthController
+	/login POST
+		takes username and plaintext pass, returns cookie
+	/logout POST
+		takes nothing, returns nothing
+
+UserController
+	/users POST
+		takes username and plaintext pass
+	/users/{userId} GET
+		takes nothing, returns (userId, username)
+	/users/{userId} PUT
+		takes plaintext pass (new password), returns nothing
+	/users/{userId} DELETE
+		takes nothing, returns nothing
+
+ResourceController
+	/resources GET
+		takes nothing, returns List<(resourceId, resourceValue)>
+	/resources POST
+		takes resourceValue, returns (resourceId, resourceValue)
+	/resources/{resourceId} GET
+		takes nothing, returns (resourceId, resourceValue)
+	/resources/{resourceId} PUT
+		takes resourceValue, returns (resourceId, resourceValue)
+	/resources/{resourceId} DELETE
+		takes nothing, returns nothing
+
+PermissionsController
+	/permissions POST
+		takes (resourceId, userId, permissionType), returns permission grant ID (maybe?)
+	/permissions/{permissionId} DELETE
+		takes nothing, returns nothing
+
+	/resources/{resourceId}/permissions GET
+		takes nothing, returns List<(permissionGrantId, userId (and/or username?), resourceId, permissionType)>
+	
