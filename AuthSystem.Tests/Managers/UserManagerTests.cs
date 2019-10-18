@@ -86,10 +86,7 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, new PlaintextPassword(""));
 
             // Assert
-            result.Switch(
-                usernameAlreadyExists => { },
-                userCreated => throw new Exception("test failed")
-            );
+            Assert.IsFalse(result.HasValue);
         }
 
         [TestMethod]
@@ -106,10 +103,7 @@ namespace AuthSystem.Tests.Managers
             var result = await manager.CreateUserAsync(username, new PlaintextPassword(""));
 
             // Assert
-            result.Switch(
-                usernameAlreadyExists => throw new Exception("test failed"),
-                userCreated => { }
-            );
+            Assert.IsTrue(result.HasValue);
         }
 
         [TestMethod]
