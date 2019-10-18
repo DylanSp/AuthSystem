@@ -1,4 +1,5 @@
 ﻿using AuthSystem.DTOs;
+using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -9,6 +10,13 @@ namespace AuthSystem.Controllers
     [ApiController]
     public class PermissionsController : ControllerBase
     {
+        private readonly IPermissionGrantManager _permissionGrantManager;
+
+        public PermissionsController(IPermissionGrantManager permissionGrantManager)
+        {
+            _permissionGrantManager = permissionGrantManager;
+        }
+
         [HttpGet]
         [Route("resources/{resourceId:guid}/permissions")]
         public async Task<ActionResult<List<PermissionGrantDTO>>> GetPermissionsForResourceAsync(
