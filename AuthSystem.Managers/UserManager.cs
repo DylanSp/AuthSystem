@@ -32,7 +32,7 @@ namespace AuthSystem.Managers
 
         public async Task<OneOf<UsernameAlreadyExists, UserCreated>> CreateUserAsync(Username username, PlaintextPassword password)
         {
-            var id = UserId.From(Guid.NewGuid());
+            var id = new UserId(Guid.NewGuid());
 
             if (!await Adapter.IsUsernameUniqueAsync(username))
             {

@@ -33,7 +33,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task Save_ThenReadById_RoundTrips()
         {
             // Arrange
-            var userToCreate = new User(UserId.From(Guid.NewGuid()), Username.From("Alfred"), SaltedHashedPassword.From("someSaltedHash"));
+            var userToCreate = new User(new UserId(Guid.NewGuid()), new Username("Alfred"), new SaltedHashedPassword("someSaltedHash"));
             var adapter = new PostgresUserAdapter(connection!);
 
             // Act
@@ -50,7 +50,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task Save_ThenReadByName_RoundTrips()
         {
             // Arrange
-            var userToCreate = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
+            var userToCreate = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var adapter = new PostgresUserAdapter(connection!);
 
             // Act
@@ -67,8 +67,8 @@ namespace AuthSystem.Tests.Adapters
         public async Task Update_ThenRead_ReturnsUpdatedData()
         {
             // Arrange
-            var initialUser = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
-            var updatedUser = new User(initialUser.Id, initialUser.Username, SaltedHashedPassword.From("someOtherSaltedHash"));
+            var initialUser = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
+            var updatedUser = new User(initialUser.Id, initialUser.Username, new SaltedHashedPassword("someOtherSaltedHash"));
 
             var adapter = new PostgresUserAdapter(connection!);
 
@@ -87,8 +87,8 @@ namespace AuthSystem.Tests.Adapters
         public async Task Update_OfOneUser_ReturnsOne()
         {
             // Arrange
-            var initialUser = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
-            var updatedUser = new User(initialUser.Id, initialUser.Username, SaltedHashedPassword.From("someOtherSaltedHash"));
+            var initialUser = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
+            var updatedUser = new User(initialUser.Id, initialUser.Username, new SaltedHashedPassword("someOtherSaltedHash"));
 
             var adapter = new PostgresUserAdapter(connection!);
 
@@ -105,7 +105,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task IsUsernameUnique_WithUniqueNameInDatabase_ReturnsTrue()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From(Guid.NewGuid().ToString()), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var adapter = new PostgresUserAdapter(connection!);
 
             // Act

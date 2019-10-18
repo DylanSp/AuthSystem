@@ -1,6 +1,6 @@
 ﻿namespace AuthSystem.Data
 {
-    public struct Resource
+    public readonly struct Resource
     {
         public ResourceId Id { get; }
         public ResourceValue Value { get; }

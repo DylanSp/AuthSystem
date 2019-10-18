@@ -34,15 +34,15 @@ namespace AuthSystem.Tests.Adapters
         public async Task CreateGrant_ThenCheckForThatGrant_ReturnsTrue()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
             var resourceAdapter = new PostgresResourceAdapter(connection!);
             await resourceAdapter.CreateResourceAsync(resource);
 
-            var grantToCreate = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
+            var grantToCreate = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
             var permissionGrantAdapter = new PostgresPermissionGrantAdapter(connection!);
 
             // Act
@@ -61,15 +61,15 @@ namespace AuthSystem.Tests.Adapters
             // Arrange
 
             // create grant
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
             var resourceAdapter = new PostgresResourceAdapter(connection!);
             await resourceAdapter.CreateResourceAsync(resource);
 
-            var grant = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
+            var grant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
             var permissionGrantAdapter = new PostgresPermissionGrantAdapter(connection!);
 
             await permissionGrantAdapter.CreatePermissionGrantAsync(grant);
@@ -88,16 +88,16 @@ namespace AuthSystem.Tests.Adapters
         public async Task GetAllPermissions_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
-            var user = new User(UserId.From(Guid.NewGuid()), Username.From("Alice"), SaltedHashedPassword.From("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
-            var resource = new Resource(ResourceId.From(Guid.NewGuid()), ResourceValue.From("someSecret"));
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
             var resourceAdapter = new PostgresResourceAdapter(connection!);
             await resourceAdapter.CreateResourceAsync(resource);
 
-            var readGrant = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
-            var writeGrant = new PermissionGrant(PermissionGrantId.From(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Write);
+            var readGrant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
+            var writeGrant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Write);
             var permissionGrantAdapter = new PostgresPermissionGrantAdapter(connection!);
 
             await permissionGrantAdapter.CreatePermissionGrantAsync(readGrant);

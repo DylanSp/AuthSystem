@@ -14,7 +14,7 @@ namespace AuthSystem.Tests
         {
             // Arrange
             var service = new PasswordService(PasswordHash.StrengthArgon.Interactive);
-            var password = PlaintextPassword.From("somePass");
+            var password = new PlaintextPassword("somePass");
 
             // Act
             var hash = service.GeneratePasswordHashAndSalt(password);
@@ -31,8 +31,8 @@ namespace AuthSystem.Tests
             // Arrange
             var service = new PasswordService(PasswordHash.StrengthArgon.Interactive);
 
-            var password = PlaintextPassword.From("somePass");
-            var otherPass = PlaintextPassword.From("otherPass");
+            var password = new PlaintextPassword("somePass");
+            var otherPass = new PlaintextPassword("otherPass");
 
             // Act
             var hash = service.GeneratePasswordHashAndSalt(password);

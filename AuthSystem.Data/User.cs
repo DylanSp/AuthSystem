@@ -1,6 +1,6 @@
 ﻿namespace AuthSystem.Data
 {
-    public struct User
+    public readonly struct User
     {
         public UserId Id { get; }
         public Username Username { get; }

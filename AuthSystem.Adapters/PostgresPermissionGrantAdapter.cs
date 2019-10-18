@@ -76,9 +76,9 @@ namespace AuthSystem.Adapters
 
                 while (await reader.ReadAsync())
                 {
-                    var id = PermissionGrantId.From((Guid) reader["Id"]);
-                    var readUserId = UserId.From((Guid) reader["UserId"]);
-                    var resourceId = ResourceId.From((Guid) reader["ResourceId"]);
+                    var id = new PermissionGrantId((Guid) reader["Id"]);
+                    var readUserId = new UserId((Guid)reader["UserId"]);
+                    var resourceId = new ResourceId((Guid) reader["ResourceId"]);
                     var permissionType = (int)reader["PermissionType"] switch
                     {
                         1 => PermissionType.Read,

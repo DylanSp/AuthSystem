@@ -15,7 +15,7 @@ namespace AuthSystem.Services
 
         public SaltedHashedPassword GeneratePasswordHashAndSalt(PlaintextPassword password)
         {
-            return SaltedHashedPassword.From(PasswordHash.ArgonHashString(password.Value, Strength));
+            return new SaltedHashedPassword(PasswordHash.ArgonHashString(password.Value, Strength));
         }
 
         public bool CheckIfPasswordMatchesHash(PlaintextPassword password, SaltedHashedPassword hash)
