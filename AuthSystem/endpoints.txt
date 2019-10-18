@@ -1,37 +1,64 @@
-﻿AuthController
+﻿DTOs:
+
+ResourceDetailsDTO
+	Value (string)
+
+ResourceDTO
+	ID (Guid)
+	Details (ResourceDetailsDTO)
+
+UserAuthenticationDTO
+	Username (string)
+	Password (string)
+
+UserPasswordDTO
+	Password (string)
+
+PermissionGrantDetailsDTO
+	ResourceID (Guid)
+	Username (string)
+	PermissionType (string)
+
+PermissionGrantDTO
+	PermissionGrantID (Guid)
+	Details (PermissionGrantDetailsDTO)
+
+
+
+Endpoints:
+
+AuthController
 	/login POST
-		takes username and plaintext pass, returns cookie
+		takes UserAuthenticationDTO, returns cookie
 	/logout POST
 		takes nothing, returns nothing
 
 UserController
 	/users POST
-		takes username and plaintext pass
-	/users/{userId} GET
-		takes nothing, returns (userId, username)
-	/users/{userId} PUT
-		takes plaintext pass (new password), returns nothing
-	/users/{userId} DELETE
+		takes UserAuthenticationDTO, returns UserAuthenticationDTO
+	/users/{username} PUT
+		takes UserPasswordDTO, returns nothing
+	/users/{username} DELETE
 		takes nothing, returns nothing
 
 ResourceController
 	/resources GET
-		takes nothing, returns List<(resourceId, resourceValue)>
+		takes nothing, returns List<ResourceDTO>
 	/resources POST
-		takes resourceValue, returns (resourceId, resourceValue)
+		takes ResourceDetailsDTO, returns ResourceDTO
 	/resources/{resourceId} GET
-		takes nothing, returns (resourceId, resourceValue)
+		takes nothing, returns ResourceDTO
 	/resources/{resourceId} PUT
-		takes resourceValue, returns (resourceId, resourceValue)
+		takes ResourceDetailsDTO, returns ResourceDTO
 	/resources/{resourceId} DELETE
 		takes nothing, returns nothing
 
 PermissionsController
 	/permissions POST
-		takes (resourceId, userId, permissionType), returns permission grant ID (maybe?)
+		takes PermissionGrantDetailsDTO, returns PermissionGrantDTO
 	/permissions/{permissionId} DELETE
 		takes nothing, returns nothing
 
 	/resources/{resourceId}/permissions GET
-		takes nothing, returns List<(permissionGrantId, userId (and/or username?), resourceId, permissionType)>
+		takes nothing, returns List<PermissionGrantDTO>
 	
