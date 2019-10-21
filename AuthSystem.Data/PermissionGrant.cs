@@ -5,6 +5,7 @@
         Unknown = 0,
         Read = 1,
         Write = 2,
+        ManagePermissions = 3,
     }
 
     public readonly struct PermissionGrant

@@ -76,21 +76,49 @@ namespace AuthSystem.Adapters
 
                 while (await reader.ReadAsync())
                 {
-                    var id = new PermissionGrantId((Guid) reader["Id"]);
-                    var readUserId = new UserId((Guid)reader["UserId"]);
-                    var resourceId = new ResourceId((Guid) reader["ResourceId"]);
-                    var permissionType = (int)reader["PermissionType"] switch
-                    {
-                        1 => PermissionType.Read,
-                        2 => PermissionType.Write,
-                        _ => PermissionType.Unknown
-                    };
-
-                    permissionGrants.Add(new PermissionGrant(id, readUserId, resourceId, permissionType));
+                    permissionGrants.Add(ReadGrant(reader));
                 }
 
                 return permissionGrants;
             }
+        }
+
+        public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForResourceAsync(ResourceId resourceId)
+        {
+            var getAllQuery = @"SELECT Id, UserId, ResourceId, PermissionType
+                                FROM PermissionGrants
+                                WHERE ResourceId = @ResourceId";
+            using (var command = new NpgsqlCommand(getAllQuery, Connection))
+            {
+                command.Parameters.AddWithValue("ResourceId", resourceId.Value);
+
+                var reader = await command.ExecuteReaderAsync();
+
+                var permissionGrants = new List<PermissionGrant>();
+
+                while (await reader.ReadAsync())
+                {
+                    permissionGrants.Add(ReadGrant(reader));
+                }
+
+                return permissionGrants;
+            }
+        }
+
+
+        private PermissionGrant ReadGrant(NpgsqlDataReader reader)
+        {
+            var id = new PermissionGrantId((Guid)reader["Id"]);
+            var readUserId = new UserId((Guid)reader["UserId"]);
+            var resourceId = new ResourceId((Guid)reader["ResourceId"]);
+            var permissionType = (int)reader["PermissionType"] switch
+            {
+                1 => PermissionType.Read,
+                2 => PermissionType.Write,
+                _ => PermissionType.Unknown
+            };
+
+            return new PermissionGrant(id, readUserId, resourceId, permissionType);
         }
     }
 }

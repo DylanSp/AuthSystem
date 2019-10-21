@@ -39,5 +39,16 @@ namespace AuthSystem.Managers
         {
             return await Adapter.GetAllPermissionsForUserAsync(userId);
         }
+
+        public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForResourceAsync(UserId userId,
+            ResourceId resourceId)
+        {
+            if (!await CheckIfUserHasPermissionAsync(userId, resourceId, PermissionType.ManagePermissions))
+            {
+                return new List<PermissionGrant>();
+            }
+
+            return await Adapter.GetAllPermissionsForResourceAsync(resourceId);
+        }
     }
 }

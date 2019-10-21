@@ -10,5 +10,6 @@ namespace AuthSystem.Interfaces.Managers
         Task DeletePermissionGrantAsync(PermissionGrantId permissionId);
         Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission);
         Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(UserId userId);
+        Task<IEnumerable<PermissionGrant>> GetAllPermissionsForResourceAsync(UserId userId, ResourceId resourceId);
     }
 }
