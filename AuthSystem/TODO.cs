@@ -6,7 +6,7 @@
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - in UserManager, make (check for username uniqueness +  user creation) atomic to avoid race conditions?
     // TODO - logging with Serilog
-    // TODO - grant permission mgmt permission to resource creators, admin
+    // TODO - grant permission mgmt permission to admin
     // TODO - need to autocreate admin user in DB in a migration (though how to handle password? default password that gets changed?)
     // TODO - how to grant permission-changing permission to admin automatically? isAdmin column in the DB, look up all users with it set, give them perms?
 }

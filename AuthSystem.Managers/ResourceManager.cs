@@ -27,6 +27,8 @@ namespace AuthSystem.Managers
 
             await PermissionGrantManager.CreatePermissionGrantAsync(userId, resourceId, PermissionType.Read);
             await PermissionGrantManager.CreatePermissionGrantAsync(userId, resourceId, PermissionType.Write);
+            await PermissionGrantManager.CreatePermissionGrantAsync(userId, resourceId,
+                PermissionType.ManagePermissions);
 
             return resourceId;
         }

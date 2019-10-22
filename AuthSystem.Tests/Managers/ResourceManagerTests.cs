@@ -197,6 +197,24 @@ namespace AuthSystem.Tests.Managers
 
         [TestMethod]
         [TestCategory("UnitTest")]
+        public async Task CreateResource_ForValidUser_GivesUserPermissionManagementPermissionsOnCreatedResource()
+        {
+            // Arrange
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Jane"), new SaltedHashedPassword("someSaltedHash"));
+
+            var permissionGrantManager = Substitute.For<IPermissionGrantManager>();
+
+            var resourceManager = new ResourceManager(Substitute.For<IResourceAdapter>(), permissionGrantManager);
+
+            // Act
+            var result = await resourceManager.CreateResourceAsync(new ResourceValue("someSecret"), user.Id);
+
+            // Assert
+            await permissionGrantManager.Received().CreatePermissionGrantAsync(user.Id, result, PermissionType.ManagePermissions);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task UpdateResource_ForExistingUserWithoutPermission_ReturnsNotPermitted()
         {
             // Arrange
