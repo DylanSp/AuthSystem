@@ -1,6 +1,5 @@
 ﻿namespace AuthSystem
 {
-    // TODO - adapters should not take raw connection; should take IConnectionContext which has a CreateCommand() method, PostgresConnectionContext implements IDisposable, DI container makes sure context.Dispose() gets called
     // TODO - API will need to be versioned - see https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - logging with Serilog

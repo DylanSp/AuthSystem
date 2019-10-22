@@ -3,24 +3,25 @@ using AuthSystem.Interfaces.Adapters;
 using Npgsql;
 using System;
 using System.Threading.Tasks;
+using AuthSystem.Interfaces;
 
 namespace AuthSystem.Adapters
 {
     public class PostgresUserAdapter : IUserAdapter
     {
-        private NpgsqlConnection Connection { get; }
+        private IPostgresConnectionContext ConnectionContext { get; }
 
-        public PostgresUserAdapter(NpgsqlConnection connection)
+        public PostgresUserAdapter(IPostgresConnectionContext connectionContext)
         {
-            Connection = connection;
+            ConnectionContext = connectionContext;
         }
 
         public async Task<int> CreateUserAsync(User newUser)
         {
-            var insertUserQuery = @"INSERT INTO Users (Id, Username, SaltedHash)
-                                    VALUES (@Id, @Username, @SaltedHash)";
-            using (var command = new NpgsqlCommand(insertUserQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"INSERT INTO Users (Id, Username, SaltedHash)
+                                        VALUES (@Id, @Username, @SaltedHash)";
                 command.Parameters.AddWithValue("Id", newUser.Id.Value);
                 command.Parameters.AddWithValue("Username", newUser.Username.Value);
                 command.Parameters.AddWithValue("SaltedHash", newUser.SaltedHashedPassword.Value);
@@ -40,11 +41,11 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByIdAsync(UserId userId)
         {
-            var getUserQuery = @"SELECT Id, Username, SaltedHash
-                                 FROM Users
-                                 WHERE Id = @Id";
-            using (var command = new NpgsqlCommand(getUserQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"SELECT Id, Username, SaltedHash
+                                        FROM Users
+                                        WHERE Id = @Id";
                 command.Parameters.AddWithValue("Id", userId.Value);
                 var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
@@ -63,11 +64,11 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByUsernameAsync(Username username)
         {
-            var getUserQuery = @"SELECT Id, Username, SaltedHash
-                                 FROM Users
-                                 WHERE Username = @Username";
-            using (var command = new NpgsqlCommand(getUserQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"SELECT Id, Username, SaltedHash
+                                        FROM Users
+                                        WHERE Username = @Username";
                 command.Parameters.AddWithValue("Username", username.Value);
                 var reader = await command.ExecuteReaderAsync();
                 if (await reader.ReadAsync())
@@ -86,11 +87,11 @@ namespace AuthSystem.Adapters
 
         public async Task<int> UpdateUserAsync(User newUser)
         {
-            var updateQuery = @"UPDATE Users
-                                SET Username = @Username, SaltedHash = @SaltedHash
-                                WHERE Id = @Id";
-            using (var command = new NpgsqlCommand(updateQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"UPDATE Users
+                                        SET Username = @Username, SaltedHash = @SaltedHash
+                                        WHERE Id = @Id";
                 command.Parameters.AddWithValue("Id", newUser.Id.Value);
                 command.Parameters.AddWithValue("Username", newUser.Username.Value);
                 command.Parameters.AddWithValue("SaltedHash", newUser.SaltedHashedPassword.Value);

@@ -1,5 +1,6 @@
 ﻿using AuthSystem.Adapters;
 using AuthSystem.Data;
+using AuthSystem.Interfaces;
 using Microsoft.Extensions.Configuration;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Npgsql;
@@ -11,21 +12,21 @@ namespace AuthSystem.Tests.Adapters
     [TestClass]
     public class PostgresUserAdapterTests
     {
-        private NpgsqlConnection? connection;
+        private IPostgresConnectionContext? connectionContext;
 
         [TestInitialize]
         public async Task Setup()
         {
             var config = new ConfigurationBuilder().AddJsonFile("TestConfig.json").Build();
             var connectionString = config["connectionString"];
-            connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();
+            connectionContext = new PostgresConnectionContext(connectionString);
+            await connectionContext.OpenAsync();
         }
 
         [TestCleanup]
         public async Task Teardown()
         {
-            await connection!.DisposeAsync();
+            await connectionContext!.DisposeAsync();
         }
 
         [TestMethod]
@@ -34,7 +35,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var userToCreate = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
 
             // Act
             await adapter.CreateUserAsync(userToCreate);
@@ -51,7 +52,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var userToCreate = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
 
             // Act
             await adapter.CreateUserAsync(userToCreate);
@@ -70,7 +71,7 @@ namespace AuthSystem.Tests.Adapters
             var initialUser = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var updatedUser = new User(initialUser.Id, initialUser.Username, new SaltedHashedPassword("someOtherSaltedHash"));
 
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
 
             // Act
             await adapter.CreateUserAsync(initialUser);
@@ -90,7 +91,7 @@ namespace AuthSystem.Tests.Adapters
             var initialUser = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var updatedUser = new User(initialUser.Id, initialUser.Username, new SaltedHashedPassword("someOtherSaltedHash"));
 
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
 
             // Act
             await adapter.CreateUserAsync(initialUser);
@@ -106,7 +107,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
 
             // Act
             var numInserted = await adapter.CreateUserAsync(user);
@@ -121,7 +122,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
-            var adapter = new PostgresUserAdapter(connection!);
+            var adapter = new PostgresUserAdapter(connectionContext!);
             await adapter.CreateUserAsync(user);    // make sure user already exists...
 
             // Act

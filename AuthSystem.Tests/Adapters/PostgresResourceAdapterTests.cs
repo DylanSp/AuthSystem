@@ -6,27 +6,28 @@ using Npgsql;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using AuthSystem.Interfaces;
 
 namespace AuthSystem.Tests.Adapters
 {
     [TestClass]
     public class PostgresResourceAdapterTests
     {
-        private NpgsqlConnection? connection;
+        private IPostgresConnectionContext? connectionContext;
 
         [TestInitialize]
         public async Task Setup()
         {
             var config = new ConfigurationBuilder().AddJsonFile("TestConfig.json").Build();
             var connectionString = config["connectionString"];
-            connection = new NpgsqlConnection(connectionString);
-            await connection.OpenAsync();
+            connectionContext = new PostgresConnectionContext(connectionString);
+            await connectionContext.OpenAsync();
         }
 
         [TestCleanup]
         public async Task Teardown()
         {
-            await connection!.DisposeAsync();
+            await connectionContext!.DisposeAsync();
         }
 
         [TestMethod]
@@ -35,7 +36,7 @@ namespace AuthSystem.Tests.Adapters
         {
             // Arrange
             var resourceToCreate = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue(Guid.NewGuid().ToString()));
-            var adapter = new PostgresResourceAdapter(connection!);
+            var adapter = new PostgresResourceAdapter(connectionContext!);
 
             // Act
             await adapter.CreateResourceAsync(resourceToCreate);
@@ -55,7 +56,7 @@ namespace AuthSystem.Tests.Adapters
             var initialResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("initial"));
             var updatedResource = new Resource(initialResource.Id, new ResourceValue("updated"));
 
-            var adapter = new PostgresResourceAdapter(connection!);
+            var adapter = new PostgresResourceAdapter(connectionContext!);
 
             // Act
             await adapter.CreateResourceAsync(initialResource);
@@ -75,7 +76,7 @@ namespace AuthSystem.Tests.Adapters
             var initialResource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("initial"));
             var updatedResource = new Resource(initialResource.Id, new ResourceValue("updated"));
 
-            var adapter = new PostgresResourceAdapter(connection!);
+            var adapter = new PostgresResourceAdapter(connectionContext!);
 
             // Act
             await adapter.CreateResourceAsync(initialResource);
@@ -93,7 +94,7 @@ namespace AuthSystem.Tests.Adapters
             var resource1 = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("value1"));
             var resource2 = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("value2"));
 
-            var adapter = new PostgresResourceAdapter(connection!);
+            var adapter = new PostgresResourceAdapter(connectionContext!);
 
             // Act
             await adapter.CreateResourceAsync(resource1);

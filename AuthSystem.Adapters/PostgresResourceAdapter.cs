@@ -4,24 +4,25 @@ using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using AuthSystem.Interfaces;
 
 namespace AuthSystem.Adapters
 {
     public class PostgresResourceAdapter : IResourceAdapter
     {
-        private NpgsqlConnection Connection { get; }
+        private IPostgresConnectionContext ConnectionContext { get; }
 
-        public PostgresResourceAdapter(NpgsqlConnection connection)
+        public PostgresResourceAdapter(IPostgresConnectionContext connectionContext)
         {
-            Connection = connection;
+            ConnectionContext = connectionContext;
         }
 
         public async Task CreateResourceAsync(Resource newResource)
         {
-            var insertResourceQuery = @"INSERT INTO Resources (Id, Value)
-                                        VALUES (@Id, @Value)";
-            using (var command = new NpgsqlCommand(insertResourceQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"INSERT INTO Resources (Id, Value)
+                                        VALUES (@Id, @Value)";
                 command.Parameters.AddWithValue("Id", newResource.Id.Value);
                 command.Parameters.AddWithValue("Value", newResource.Value.Value);
 
@@ -31,10 +32,11 @@ namespace AuthSystem.Adapters
 
         public async Task<IEnumerable<Resource>> GetAllResourcesAsync()
         {
-            var getResourcesQuery = @"SELECT Id, Value
-                                      FROM Resources";
-            using (var command = new NpgsqlCommand(getResourcesQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"SELECT Id, Value
+                                        FROM Resources";
+
                 var allResources = new List<Resource>();
 
                 var reader = await command.ExecuteReaderAsync();
@@ -51,11 +53,11 @@ namespace AuthSystem.Adapters
 
         public async Task<Resource?> GetResourceAsync(ResourceId resourceId)
         {
-            var getResourceQuery = @"SELECT Id, Value
-                                      FROM Resources
-                                      WHERE Id = @Id";
-            using (var command = new NpgsqlCommand(getResourceQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"SELECT Id, Value
+                                        FROM Resources
+                                        WHERE Id = @Id";
                 command.Parameters.AddWithValue("Id", resourceId.Value);
 
                 var reader = await command.ExecuteReaderAsync();
@@ -74,11 +76,11 @@ namespace AuthSystem.Adapters
 
         public async Task<int> UpdateResourceAsync(Resource newResource)
         {
-            var updateQuery = @"UPDATE Resources
-                                SET Value = @Value
-                                WHERE Id = @Id";
-            using (var command = new NpgsqlCommand(updateQuery, Connection))
+            using (var command = ConnectionContext.CreateCommand())
             {
+                command.CommandText = @"UPDATE Resources
+                                        SET Value = @Value
+                                        WHERE Id = @Id";
                 command.Parameters.AddWithValue("Value", newResource.Value.Value);
                 command.Parameters.AddWithValue("Id", newResource.Id.Value);
 
