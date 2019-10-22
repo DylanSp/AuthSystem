@@ -34,7 +34,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task CreateGrant_ThenCheckForThatGrant_ReturnsTrue()
         {
             // Arrange
-            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
@@ -61,7 +61,7 @@ namespace AuthSystem.Tests.Adapters
             // Arrange
 
             // create grant
-            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
@@ -88,7 +88,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task GetAllPermissionsForUser_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
-            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 
@@ -117,7 +117,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task GetAllPermissionsForResource_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
-            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var userAdapter = new PostgresUserAdapter(connection!);
             await userAdapter.CreateUserAsync(user);
 

@@ -15,7 +15,7 @@ namespace AuthSystem.Adapters
             Connection = connection;
         }
 
-        public async Task CreateUserAsync(User newUser)
+        public async Task<int> CreateUserAsync(User newUser)
         {
             var insertUserQuery = @"INSERT INTO Users (Id, Username, SaltedHash)
                                     VALUES (@Id, @Username, @SaltedHash)";
@@ -25,7 +25,16 @@ namespace AuthSystem.Adapters
                 command.Parameters.AddWithValue("Username", newUser.Username.Value);
                 command.Parameters.AddWithValue("SaltedHash", newUser.SaltedHashedPassword.Value);
 
-                await command.ExecuteNonQueryAsync();
+                try
+                {
+                    var numCreated = await command.ExecuteNonQueryAsync();
+                    return numCreated;
+                }
+                catch (NpgsqlException)
+                {
+                    // in case query fails (probably due to duplicate username)
+                    return 0;
+                }
             }
         }
 
@@ -72,17 +81,6 @@ namespace AuthSystem.Adapters
                 {
                     return null;
                 }
-            }
-        }
-
-        public async Task<bool> IsUsernameUniqueAsync(Username username)
-        {
-            var isUniqueQuery = "SELECT COUNT(*) FROM Users WHERE Username = @Username";
-            using (var command = new NpgsqlCommand(isUniqueQuery, Connection))
-            {
-                command.Parameters.AddWithValue("Username", username.Value);
-                var result = (long) await command.ExecuteScalarAsync();
-                return result <= 1;
             }
         }
 

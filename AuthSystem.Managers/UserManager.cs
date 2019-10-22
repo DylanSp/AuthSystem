@@ -33,17 +33,17 @@ namespace AuthSystem.Managers
         public async Task<UserId?> CreateUserAsync(Username username, PlaintextPassword password)
         {
             var id = new UserId(Guid.NewGuid());
-
-            if (!await Adapter.IsUsernameUniqueAsync(username))
-            {
-                return null;
-            }
-
             var user = new User(id, username, PasswordService.GeneratePasswordHashAndSalt(password));
 
-            await Adapter.CreateUserAsync(user);
+            var numInserted = await Adapter.CreateUserAsync(user);
 
-            return id;
+            if (numInserted == 1)
+            {
+                return id;
+            }
+
+            // TODO - check numInserted > 1, throw exception in that case?
+            return null;
         }
 
         public async Task<ChangePasswordResult> ChangePasswordAsync(UserId userId, PlaintextPassword oldPassword, PlaintextPassword newPassword)

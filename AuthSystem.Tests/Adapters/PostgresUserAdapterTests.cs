@@ -33,7 +33,7 @@ namespace AuthSystem.Tests.Adapters
         public async Task Save_ThenReadById_RoundTrips()
         {
             // Arrange
-            var userToCreate = new User(new UserId(Guid.NewGuid()), new Username("Alfred"), new SaltedHashedPassword("someSaltedHash"));
+            var userToCreate = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var adapter = new PostgresUserAdapter(connection!);
 
             // Act
@@ -102,18 +102,35 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
-        public async Task IsUsernameUnique_WithUniqueNameInDatabase_ReturnsTrue()
+        public async Task CreateUser_WithNewUsername_ReturnsOne()
         {
             // Arrange
             var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
             var adapter = new PostgresUserAdapter(connection!);
 
             // Act
-            await adapter.CreateUserAsync(user);
-            var isUnique = await adapter.IsUsernameUniqueAsync(user.Username);
+            var numInserted = await adapter.CreateUserAsync(user);
 
             // Assert
-            Assert.IsTrue(isUnique);
+            Assert.AreEqual(1, numInserted);
+        }
+
+        [TestMethod]
+        [TestCategory("IntegrationTest")]
+        public async Task CreateUser_WithExistingUsername_ReturnsZero()
+        {
+            // Arrange
+            var user = new User(new UserId(Guid.NewGuid()), new Username(Guid.NewGuid().ToString()), new SaltedHashedPassword("someSaltedHash"));
+            var adapter = new PostgresUserAdapter(connection!);
+            await adapter.CreateUserAsync(user);    // make sure user already exists...
+
+            // Act
+            // ...then try creating it again
+            var newUser = new User(new UserId(Guid.NewGuid()), user.Username, user.SaltedHashedPassword);
+            var numInserted = await adapter.CreateUserAsync(newUser);
+
+            // Assert
+            Assert.AreEqual(0, numInserted);
         }
     }
 }

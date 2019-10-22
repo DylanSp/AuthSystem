@@ -1,5 +1,4 @@
-﻿using System;
-using AuthSystem.Data;
+﻿using AuthSystem.Data;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Interfaces.Adapters
@@ -8,8 +7,7 @@ namespace AuthSystem.Interfaces.Adapters
     {
         Task<User?> GetUserByIdAsync(UserId userId);
         Task<User?> GetUserByUsernameAsync(Username username);
-        Task CreateUserAsync(User newUser);
+        Task<int> CreateUserAsync(User newUser);
         Task<int> UpdateUserAsync(User newUser);
-        Task<bool> IsUsernameUniqueAsync(Username username);
     }
 }
