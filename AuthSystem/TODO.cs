@@ -1,6 +1,5 @@
 ﻿namespace AuthSystem
 {
-    // TODO - test PostgresPermissionGrantAdapter.GetAllPermissionsForResourceAsync
     // TODO - adapters should not take raw connection; should take IConnectionContext which has a CreateCommand() method, PostgresConnectionContext implements IDisposable, DI container makes sure context.Dispose() gets called
     // TODO - API will need to be versioned - see https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
     // TODO - make Users/Username column in DB have a UNIQUE constraint?

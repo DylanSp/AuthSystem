@@ -85,7 +85,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
-        public async Task GetAllPermissions_WithMultipleGrants_ReturnsAll()
+        public async Task GetAllPermissionsForUser_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
             var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
@@ -105,6 +105,35 @@ namespace AuthSystem.Tests.Adapters
 
             // Act
             var allGrants = await permissionGrantAdapter.GetAllPermissionsForUserAsync(user.Id);
+
+            // Assert
+            Assert.IsTrue(allGrants.Count() >= 2);
+            Assert.IsTrue(allGrants.Contains(readGrant));
+            Assert.IsTrue(allGrants.Contains(writeGrant));
+        }
+
+        [TestMethod]
+        [TestCategory("IntegrationTest")]
+        public async Task GetAllPermissionsForResource_WithMultipleGrants_ReturnsAll()
+        {
+            // Arrange
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Alice"), new SaltedHashedPassword("someSaltedHash"));
+            var userAdapter = new PostgresUserAdapter(connection!);
+            await userAdapter.CreateUserAsync(user);
+
+            var resource = new Resource(new ResourceId(Guid.NewGuid()), new ResourceValue("someSecret"));
+            var resourceAdapter = new PostgresResourceAdapter(connection!);
+            await resourceAdapter.CreateResourceAsync(resource);
+
+            var readGrant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Read);
+            var writeGrant = new PermissionGrant(new PermissionGrantId(Guid.NewGuid()), user.Id, resource.Id, PermissionType.Write);
+            var permissionGrantAdapter = new PostgresPermissionGrantAdapter(connection!);
+
+            await permissionGrantAdapter.CreatePermissionGrantAsync(readGrant);
+            await permissionGrantAdapter.CreatePermissionGrantAsync(writeGrant);
+
+            // Act
+            var allGrants = await permissionGrantAdapter.GetAllPermissionsForResourceAsync(resource.Id);
 
             // Assert
             Assert.IsTrue(allGrants.Count() >= 2);
