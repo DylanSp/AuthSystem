@@ -3,6 +3,7 @@ using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
 using AuthSystem.Managers;
+using AuthSystem.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -25,9 +26,16 @@ namespace AuthSystem
         {
             services.AddApiVersioning();
 
-            // TODO - register other services
             services.AddTransient<IPermissionGrantManager, PermissionGrantManager>();
+            services.AddTransient<IResourceManager, ResourceManager>();
+            services.AddTransient<IUserManager, UserManager>();
+
+            services.AddTransient<IPasswordService, PasswordService>();
+
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
+            services.AddTransient<IResourceAdapter, PostgresResourceAdapter>();
+            services.AddTransient<IUserAdapter, PostgresUserAdapter>();
+
             services.AddTransient<IPostgresConnectionContext>(sp =>
             {
                 var connectionString = Configuration["ConnectionString"];

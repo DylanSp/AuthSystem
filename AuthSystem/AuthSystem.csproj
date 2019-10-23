@@ -22,6 +22,7 @@
     <ProjectReference Include="..\AuthSystem.Data\AuthSystem.Data.csproj" />
     <ProjectReference Include="..\AuthSystem.Interfaces\AuthSystem.Interfaces.csproj" />
     <ProjectReference Include="..\AuthSystem.Managers\AuthSystem.Managers.csproj" />
+    <ProjectReference Include="..\AuthSystem.Services\AuthSystem.Services.csproj" />
   </ItemGroup>
 
 </Project>
