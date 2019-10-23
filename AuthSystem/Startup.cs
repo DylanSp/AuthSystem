@@ -30,8 +30,7 @@ namespace AuthSystem
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
             services.AddTransient<IPostgresConnectionContext>(sp =>
             {
-                // TODO - load connection string from config file
-                var connectionString = "User ID=postgres;Password=adminpass;Host=localhost;Port=5432;Database=AuthSystem;";
+                var connectionString = Configuration["ConnectionString"];
                 var connectionContext = new PostgresConnectionContext(connectionString);
                 return connectionContext;
             });

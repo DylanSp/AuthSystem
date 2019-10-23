@@ -19,7 +19,7 @@ namespace AuthSystem.Adapters
 
         public async Task<bool> CheckIfUserHasPermissionAsync(UserId userId, ResourceId resourceId, PermissionType permission)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT COUNT(*)
                                         FROM PermissionGrants
@@ -37,7 +37,7 @@ namespace AuthSystem.Adapters
 
         public async Task CreatePermissionGrantAsync(PermissionGrant grant)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"INSERT INTO PermissionGrants (Id, UserId, ResourceId, PermissionType)
                                         VALUES (@Id, @UserId, @ResourceId, @PermissionType)";
@@ -52,7 +52,7 @@ namespace AuthSystem.Adapters
 
         public async Task DeletePermissionGrantAsync(PermissionGrantId permissionId)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"DELETE FROM PermissionGrants
                                         WHERE Id = @Id";
@@ -64,7 +64,7 @@ namespace AuthSystem.Adapters
 
         public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForUserAsync(UserId userId)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, UserId, ResourceId, PermissionType
                                         FROM PermissionGrants
@@ -86,7 +86,7 @@ namespace AuthSystem.Adapters
 
         public async Task<IEnumerable<PermissionGrant>> GetAllPermissionsForResourceAsync(ResourceId resourceId)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, UserId, ResourceId, PermissionType
                                         FROM PermissionGrants

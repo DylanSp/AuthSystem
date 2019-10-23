@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Text;
-using System.Threading.Tasks;
-using AuthSystem.Interfaces;
+﻿using AuthSystem.Interfaces;
 using Npgsql;
+using System;
+using System.Data;
+using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
 {
@@ -19,29 +17,26 @@ namespace AuthSystem.Adapters
             Connection = new NpgsqlConnection(connectionStringBuilder.ConnectionString);
         }
 
-        public async Task OpenAsync()
+        public async Task<NpgsqlCommand> CreateCommandAsync()
         {
             if (Connection.State != ConnectionState.Open)
             {
                 await Connection.OpenAsync();
             }
-        }
-
-        public NpgsqlCommand CreateCommand()
-        {
-            if (Connection.State != ConnectionState.Open)
-            {
-                throw new Exception("Attempted to create command on closed connection - check connection opening logic");
-            }
-
             return Connection.CreateCommand();
         }
 
-        public async ValueTask DisposeAsync()
+        public void Dispose()
         {
-            if (Connection.State != ConnectionState.Closed)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && Connection.State != ConnectionState.Closed)
             {
-                await Connection.CloseAsync();
+                Connection.Close();
             }
         }
     }

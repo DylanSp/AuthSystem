@@ -15,18 +15,17 @@ namespace AuthSystem.Tests.Adapters
         private IPostgresConnectionContext? connectionContext;
 
         [TestInitialize]
-        public async Task Setup()
+        public void Setup()
         {
             var config = new ConfigurationBuilder().AddJsonFile("TestConfig.json").Build();
             var connectionString = config["connectionString"];
             connectionContext = new PostgresConnectionContext(connectionString);
-            await connectionContext.OpenAsync();
         }
 
         [TestCleanup]
-        public async Task Teardown()
+        public void Teardown()
         {
-            await connectionContext!.DisposeAsync();
+            connectionContext!.Dispose();
         }
 
         [TestMethod]

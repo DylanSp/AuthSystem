@@ -1,4 +1,5 @@
-﻿using AuthSystem.DTOs;
+﻿using AuthSystem.Data;
+using AuthSystem.DTOs;
 using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -24,6 +25,8 @@ namespace AuthSystem.Controllers
         public async Task<ActionResult<List<PermissionGrantDTO>>> GetPermissionsForResourceAsync(
             [FromRoute] Guid resourceId)
         {
+            await _permissionGrantManager.DeletePermissionGrantAsync(new PermissionGrantId(Guid.NewGuid()));
+
             throw new NotImplementedException();
         }
 

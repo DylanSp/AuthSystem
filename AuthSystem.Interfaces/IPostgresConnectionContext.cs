@@ -4,9 +4,8 @@ using System.Threading.Tasks;
 
 namespace AuthSystem.Interfaces
 {
-    public interface IPostgresConnectionContext : IAsyncDisposable
+    public interface IPostgresConnectionContext : IDisposable
     {
-        Task OpenAsync();
-        NpgsqlCommand CreateCommand();
+        Task<NpgsqlCommand> CreateCommandAsync();
     }
 }

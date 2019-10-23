@@ -18,7 +18,7 @@ namespace AuthSystem.Adapters
 
         public async Task<int> CreateUserAsync(User newUser)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"INSERT INTO Users (Id, Username, SaltedHash)
                                         VALUES (@Id, @Username, @SaltedHash)";
@@ -41,7 +41,7 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByIdAsync(UserId userId)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, Username, SaltedHash
                                         FROM Users
@@ -64,7 +64,7 @@ namespace AuthSystem.Adapters
 
         public async Task<User?> GetUserByUsernameAsync(Username username)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, Username, SaltedHash
                                         FROM Users
@@ -87,7 +87,7 @@ namespace AuthSystem.Adapters
 
         public async Task<int> UpdateUserAsync(User newUser)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"UPDATE Users
                                         SET Username = @Username, SaltedHash = @SaltedHash

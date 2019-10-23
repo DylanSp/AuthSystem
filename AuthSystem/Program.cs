@@ -16,12 +16,7 @@ namespace AuthSystem
         public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
-
-            await using (var connectionContext = host.Services.GetRequiredService<IPostgresConnectionContext>())
-            {
-                await connectionContext.OpenAsync();
-                await host.RunAsync();
-            }
+            await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

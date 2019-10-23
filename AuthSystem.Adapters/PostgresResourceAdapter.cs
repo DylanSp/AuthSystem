@@ -19,7 +19,7 @@ namespace AuthSystem.Adapters
 
         public async Task CreateResourceAsync(Resource newResource)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"INSERT INTO Resources (Id, Value)
                                         VALUES (@Id, @Value)";
@@ -32,7 +32,7 @@ namespace AuthSystem.Adapters
 
         public async Task<IEnumerable<Resource>> GetAllResourcesAsync()
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, Value
                                         FROM Resources";
@@ -53,7 +53,7 @@ namespace AuthSystem.Adapters
 
         public async Task<Resource?> GetResourceAsync(ResourceId resourceId)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"SELECT Id, Value
                                         FROM Resources
@@ -76,7 +76,7 @@ namespace AuthSystem.Adapters
 
         public async Task<int> UpdateResourceAsync(Resource newResource)
         {
-            using (var command = ConnectionContext.CreateCommand())
+            using (var command = await ConnectionContext.CreateCommandAsync())
             {
                 command.CommandText = @"UPDATE Resources
                                         SET Value = @Value
