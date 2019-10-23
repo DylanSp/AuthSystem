@@ -28,8 +28,8 @@ steps:
 - task: Bash@3
   displayName: Start and Initialize Postgres Container
   inputs:
-    targetType: 'filePath'
-    filePath: 'AuthSystem.Scripts/initialize_postgres.sh'
+    targetType: 'inline'
+    script: './AuthSystem.Scripts/initialize_postgres.sh'
 
 - task: DotNetCoreCLI@2
   displayName: Integration Tests
