@@ -5,7 +5,9 @@ using System.Threading.Tasks;
 
 namespace AuthSystem.Controllers
 {
+    [ApiVersion("1")]
     [ApiController]
+    [Route("v{version:apiVersion}")]
     public class AuthenticationController : ControllerBase
     {
         [HttpPost]

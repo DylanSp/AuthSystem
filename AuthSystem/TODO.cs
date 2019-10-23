@@ -1,6 +1,5 @@
 ﻿namespace AuthSystem
 {
-    // TODO - API will need to be versioned - see https://github.com/microsoft/aspnet-api-versioning/wiki/New-Services-Quick-Start#aspnet-core
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - logging with Serilog
     // TODO - grant permission mgmt permission to admin

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="4.0.0-preview8.19405.7" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="3.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="3.0.0">
       <PrivateAssets>all</PrivateAssets>
@@ -17,8 +18,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\AuthSystem.Adapters\AuthSystem.Adapters.csproj" />
     <ProjectReference Include="..\AuthSystem.Data\AuthSystem.Data.csproj" />
     <ProjectReference Include="..\AuthSystem.Interfaces\AuthSystem.Interfaces.csproj" />
+    <ProjectReference Include="..\AuthSystem.Managers\AuthSystem.Managers.csproj" />
   </ItemGroup>
 
 </Project>
