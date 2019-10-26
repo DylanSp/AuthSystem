@@ -23,16 +23,13 @@
     <ProjectReference Include="..\AuthSystem.Adapters\AuthSystem.Adapters.csproj" />
     <ProjectReference Include="..\AuthSystem.Managers\AuthSystem.Managers.csproj" />
     <ProjectReference Include="..\AuthSystem.Services\AuthSystem.Services.csproj" />
+    <ProjectReference Include="..\AuthSystem\AuthSystem.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <None Update="TestConfig.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>

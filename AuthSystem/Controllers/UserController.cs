@@ -1,4 +1,6 @@
-﻿using AuthSystem.DTOs;
+﻿using AuthSystem.Data;
+using AuthSystem.DTOs;
+using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -10,11 +12,26 @@ namespace AuthSystem.Controllers
     [Route("v{version:apiVersion}/users")]
     public class UserController : ControllerBase
     {
+        private IUserManager UserManager { get; }
+
+        public UserController(IUserManager userManager)
+        {
+            UserManager = userManager;
+        }
+
         [HttpPost]
         [Route("")]
-        public async Task<ActionResult<UserAuthenticationDTO>> CreateUserAsync([FromBody] UserAuthenticationDTO userAuthentication)
+        public async Task<ActionResult<UserAuthenticationDTO>> CreateUserAsync([FromRoute] ApiVersion apiVersion, [FromBody] UserAuthenticationDTO userAuthentication)
         {
-            throw new NotImplementedException();
+            var userId = await UserManager.CreateUserAsync(new Username(userAuthentication.Username), new PlaintextPassword(userAuthentication.Password));
+            if (userId.HasValue)
+            {
+                return Created($"/v{apiVersion.MajorVersion}/users/{userId.Value.Value}", userAuthentication);
+            }
+            else
+            {
+                return BadRequest("Duplicate username");
+            }
         }
 
         [HttpPut]
