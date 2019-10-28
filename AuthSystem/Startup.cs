@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Sodium;
 
 namespace AuthSystem
 {
@@ -30,7 +31,12 @@ namespace AuthSystem
             services.AddTransient<IResourceManager, ResourceManager>();
             services.AddTransient<IUserManager, UserManager>();
 
-            services.AddTransient<IPasswordService, PasswordService>();
+            services.AddTransient<IPasswordService>(sp =>
+            {
+                // TODO - load from config
+                var hashStrength = PasswordHash.StrengthArgon.Sensitive;
+                return new PasswordService(hashStrength);
+            });
 
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
             services.AddTransient<IResourceAdapter, PostgresResourceAdapter>();
