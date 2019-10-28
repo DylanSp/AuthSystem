@@ -33,6 +33,16 @@ namespace AuthSystem.Data
         }
     }
 
+    public readonly struct RefreshTokenId
+    {
+        public Guid Value { get; }
+
+        public RefreshTokenId(Guid value)
+        {
+            Value = value;
+        }
+    }
+
     public readonly struct ResourceValue
     {
         public string Value { get; }
