@@ -1,4 +1,5 @@
 using AuthSystem.Adapters;
+using AuthSystem.Authentication;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
@@ -50,6 +51,12 @@ namespace AuthSystem
             });
 
             services.AddControllers();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Custom Scheme";
+                options.DefaultChallengeScheme = "Custom Scheme";
+            }).AddCustomAuth(o => { });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -64,6 +71,7 @@ namespace AuthSystem
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>

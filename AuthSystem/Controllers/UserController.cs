@@ -1,6 +1,7 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.DTOs;
 using AuthSystem.Interfaces.Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -20,6 +21,7 @@ namespace AuthSystem.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         [Route("")]
         public async Task<ActionResult<UserAuthenticationDTO>> CreateUserAsync([FromRoute] ApiVersion apiVersion, [FromBody] UserAuthenticationDTO userAuthentication)
         {
