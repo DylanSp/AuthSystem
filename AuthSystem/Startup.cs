@@ -1,5 +1,6 @@
 using AuthSystem.Adapters;
 using AuthSystem.Authentication;
+using AuthSystem.Data;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
@@ -37,6 +38,13 @@ namespace AuthSystem
                 // TODO - load from config
                 var hashStrength = PasswordHash.StrengthArgon.Sensitive;
                 return new PasswordService(hashStrength);
+            });
+
+            services.AddTransient<IJwtService>(sp =>
+            {
+                // TODO - load from config
+                var secret = "SuperSekrit";
+                return new JwtService(new JwtSecret(secret));
             });
 
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
