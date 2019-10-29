@@ -82,5 +82,25 @@ namespace AuthSystem.Data
             Value = value;
         }
     }
+
+    public readonly struct JsonWebToken
+    {
+        public string Value { get; }
+
+        public JsonWebToken(string value)
+        {
+            Value = value;
+        }
+    }
+
+    public readonly struct JwtSecret
+    {
+        public string Value { get; }
+
+        public JwtSecret(string value)
+        {
+            Value = value;
+        }
+    }
 }
 
