@@ -69,5 +69,11 @@ namespace AuthSystem.Managers
 
             return ChangePasswordResult.PasswordChanged;
         }
+
+        public async Task<UserId?> GetIdForUsernameAsync(Username username)
+        {
+            var user = await Adapter.GetUserByUsernameAsync(username);
+            return user?.Id;
+        }
     }
 }

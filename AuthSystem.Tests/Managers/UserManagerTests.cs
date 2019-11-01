@@ -7,6 +7,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using NSubstitute;
 using System;
 using System.Threading.Tasks;
+using NSubstitute.ReturnsExtensions;
 
 namespace AuthSystem.Tests.Managers
 {
@@ -159,6 +160,40 @@ namespace AuthSystem.Tests.Managers
 
             // Assert
             Assert.AreEqual(ChangePasswordResult.PasswordChanged, result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task GetIdForUsername_WithNonexistentUsername_ReturnsNull()
+        {
+            // Arrange
+            var adapter = Substitute.For<IUserAdapter>();
+            adapter.GetUserByUsernameAsync(Arg.Any<Username>()).Returns(Task.FromResult<User?>(null));
+            var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
+
+            // Act
+            var result = await manager.GetIdForUsernameAsync(new Username("Bob"));
+
+            // Assert
+            Assert.IsNull(result);
+        }
+
+        [TestMethod]
+        [TestCategory("UnitTest")]
+        public async Task GetIdForUsername_WithExistingUser_ReturnsUserId()
+        {
+            // Arrange
+            var user = new User(new UserId(Guid.NewGuid()), new Username("Carl"), new SaltedHashedPassword("someHash"));
+            var adapter = Substitute.For<IUserAdapter>();
+            adapter.GetUserByUsernameAsync(user.Username).Returns(user);
+            var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
+
+            // Act
+            var result = await manager.GetIdForUsernameAsync(user.Username);
+
+            // Assert
+            Assert.IsTrue(result.HasValue);
+            Assert.AreEqual(user.Id, result.Value);
         }
     }
 }
