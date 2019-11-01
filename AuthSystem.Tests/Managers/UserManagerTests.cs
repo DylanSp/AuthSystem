@@ -168,7 +168,7 @@ namespace AuthSystem.Tests.Managers
         {
             // Arrange
             var adapter = Substitute.For<IUserAdapter>();
-            adapter.GetUserByUsernameAsync(Arg.Any<Username>()).Returns(Task.FromResult<User?>(null));
+            adapter.GetUserByUsernameAsync(Arg.Any<Username>()).Returns(null as User?);
             var manager = new UserManager(adapter, Substitute.For<IPasswordService>());
 
             // Act

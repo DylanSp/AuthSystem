@@ -64,7 +64,7 @@ namespace AuthSystem.Tests.Controllers
         {
             // Arrange
             var userManager = Substitute.For<IUserManager>();
-            userManager.CreateUserAsync(Arg.Any<Username>(), Arg.Any<PlaintextPassword>()).Returns(Task.FromResult<UserId?>(null)); // just using ReturnsNull returns raw null, not UserId?
+            userManager.CreateUserAsync(Arg.Any<Username>(), Arg.Any<PlaintextPassword>()).Returns(null as UserId?);
             var controller = new UserController(userManager);
             var dto = new UserAuthenticationDTO
             {
