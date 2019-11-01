@@ -21,7 +21,6 @@ namespace AuthSystem.Controllers
         }
 
         [HttpPost]
-        [Authorize]
         [Route("")]
         public async Task<ActionResult<UserAuthenticationDTO>> CreateUserAsync([FromRoute] ApiVersion apiVersion, [FromBody] UserAuthenticationDTO userAuthentication)
         {
