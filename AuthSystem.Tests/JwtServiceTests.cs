@@ -1,9 +1,7 @@
-﻿using AuthSystem.Services;
+﻿using AuthSystem.Data;
+using AuthSystem.Services;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
-using System.Collections.Generic;
-using System.Text;
-using AuthSystem.Data;
 
 namespace AuthSystem.Tests
 {
@@ -56,7 +54,7 @@ namespace AuthSystem.Tests
 
             // Assert
             Assert.IsTrue(result.HasValue);
-            Assert.AreEqual(userId, result.Value);
+            Assert.AreEqual(userId, result!.Value);
         }
     }
 }
