@@ -1,9 +1,10 @@
-﻿using AuthSystem.DTOs;
+﻿using AuthSystem.Data;
+using AuthSystem.DTOs;
+using AuthSystem.Interfaces;
+using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
-using AuthSystem.Data;
-using AuthSystem.Interfaces.Managers;
 
 namespace AuthSystem.Controllers
 {
@@ -13,23 +14,37 @@ namespace AuthSystem.Controllers
     public class AuthenticationController : ControllerBase
     {
         private IUserManager UserManager { get; }
+        private IJwtService JwtService { get; }
 
-        public AuthenticationController(IUserManager userManager)
+        public AuthenticationController(IUserManager userManager, IJwtService jwtService)
         {
             UserManager = userManager;
+            JwtService = jwtService;
         }
 
         [HttpPost]
         [Route("login")]
         public async Task<IActionResult> LoginAsync([FromBody] UserAuthenticationDTO userAuthentication)
         {
-            var isCorrectPassword = await UserManager.ValidatePasswordAsync(new Username(userAuthentication.Username),
-                new PlaintextPassword(userAuthentication.Password));
+            var username = new Username(userAuthentication.Username);
+            var isCorrectPassword =
+                await UserManager.ValidatePasswordAsync(username, new PlaintextPassword(userAuthentication.Password));
 
             if (isCorrectPassword)
             {
-                // TODO - construct access token, refresh token, save refresh token, return tokens
-                // TODO - access token should have user ID, not username
+                var userId = await UserManager.GetIdForUsernameAsync(username);
+                if (!userId.HasValue)
+                {
+                    // TODO - what to do here? either some sort of error, or user got deleted between validating password and fetching ID
+                    return Unauthorized();
+                }
+
+                // TODO - make this duration configurable?
+                var expirationTime = DateTimeOffset.Now.AddMinutes(15);
+                var accessJwt = JwtService.CreateToken(userId.Value, expirationTime);
+                Response.Cookies.Append(Constants.ACCESS_TOKEN_COOKIE_NAME, accessJwt.Value);
+                // TODO - make cookies HttpOnly, Secure, SameSite
+                // TODO - construct refresh token, save refresh token, return tokens
                 return Ok();
             }
             else

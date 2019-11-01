@@ -1,12 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Security.Claims;
+﻿using AuthSystem.Data;
+using AuthSystem.Interfaces;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System.Collections.Generic;
+using System.Security.Claims;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using AuthSystem.Data;
-using AuthSystem.Interfaces;
 
 namespace AuthSystem.Authentication
 {
@@ -24,7 +24,7 @@ namespace AuthSystem.Authentication
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
             string jwt;
-            if (!Request.Cookies.TryGetValue("AccessToken", out jwt))
+            if (!Request.Cookies.TryGetValue(Constants.ACCESS_TOKEN_COOKIE_NAME, out jwt))
             {
                 return AuthenticateResult.Fail("No AccessToken cookie attached");
             }
