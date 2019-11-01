@@ -39,15 +39,17 @@ namespace AuthSystem.Adapters
 
                 var allResources = new List<Resource>();
 
-                var reader = await command.ExecuteReaderAsync();
-                while (await reader.ReadAsync())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var id = new ResourceId((Guid)reader["Id"]);
-                    var value = new ResourceValue((string)reader["Value"]);
-                    allResources.Add(new Resource(id, value));
-                }
+                    while (await reader.ReadAsync())
+                    {
+                        var id = new ResourceId((Guid) reader["Id"]);
+                        var value = new ResourceValue((string) reader["Value"]);
+                        allResources.Add(new Resource(id, value));
+                    }
 
-                return allResources;
+                    return allResources;
+                }
             }
         }
 
@@ -60,16 +62,18 @@ namespace AuthSystem.Adapters
                                         WHERE Id = @Id";
                 command.Parameters.AddWithValue("Id", resourceId.Value);
 
-                var reader = await command.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var id = new ResourceId((Guid)reader["Id"]);
-                    var value = new ResourceValue((string)reader["Value"]);
-                    return new Resource(id, value);
-                }
-                else
-                {
-                    return null;
+                    if (await reader.ReadAsync())
+                    {
+                        var id = new ResourceId((Guid) reader["Id"]);
+                        var value = new ResourceValue((string) reader["Value"]);
+                        return new Resource(id, value);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
         }

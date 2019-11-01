@@ -71,16 +71,17 @@ namespace AuthSystem.Adapters
                                         WHERE UserId = @UserId";
                 command.Parameters.AddWithValue("UserId", userId.Value);
 
-                var reader = await command.ExecuteReaderAsync();
-
-                var permissionGrants = new List<PermissionGrant>();
-
-                while (await reader.ReadAsync())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    permissionGrants.Add(ReadGrant(reader));
-                }
+                    var permissionGrants = new List<PermissionGrant>();
 
-                return permissionGrants;
+                    while (await reader.ReadAsync())
+                    {
+                        permissionGrants.Add(ReadGrant(reader));
+                    }
+
+                    return permissionGrants;
+                }
             }
         }
 
@@ -93,16 +94,17 @@ namespace AuthSystem.Adapters
                                         WHERE ResourceId = @ResourceId";
                 command.Parameters.AddWithValue("ResourceId", resourceId.Value);
 
-                var reader = await command.ExecuteReaderAsync();
-
-                var permissionGrants = new List<PermissionGrant>();
-
-                while (await reader.ReadAsync())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    permissionGrants.Add(ReadGrant(reader));
-                }
+                    var permissionGrants = new List<PermissionGrant>();
 
-                return permissionGrants;
+                    while (await reader.ReadAsync())
+                    {
+                        permissionGrants.Add(ReadGrant(reader));
+                    }
+
+                    return permissionGrants;
+                }
             }
         }
 

@@ -47,17 +47,19 @@ namespace AuthSystem.Adapters
                                         FROM Users
                                         WHERE Id = @Id";
                 command.Parameters.AddWithValue("Id", userId.Value);
-                var reader = await command.ExecuteReaderAsync();
-                if (await reader.ReadAsync())
+                using (var reader = await command.ExecuteReaderAsync())
                 {
-                    var readId = new UserId((Guid)reader["Id"]);
-                    var username = new Username((string)reader["Username"]);
-                    var saltedHash = new SaltedHashedPassword((string)reader["SaltedHash"]);
-                    return new User(readId, username, saltedHash);
-                }
-                else
-                {
-                    return null;
+                    if (await reader.ReadAsync())
+                    {
+                        var readId = new UserId((Guid) reader["Id"]);
+                        var username = new Username((string) reader["Username"]);
+                        var saltedHash = new SaltedHashedPassword((string) reader["SaltedHash"]);
+                        return new User(readId, username, saltedHash);
+                    }
+                    else
+                    {
+                        return null;
+                    }
                 }
             }
         }
