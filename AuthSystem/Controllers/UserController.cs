@@ -1,7 +1,6 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.DTOs;
 using AuthSystem.Interfaces.Managers;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;

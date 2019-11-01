@@ -13,11 +13,11 @@ namespace AuthSystem.Controllers
     [Route("v{version:apiVersion}")]
     public class PermissionsController : ControllerBase
     {
-        private readonly IPermissionGrantManager _permissionGrantManager;
+        private IPermissionGrantManager PermissionGrantManager { get; }
 
         public PermissionsController(IPermissionGrantManager permissionGrantManager)
         {
-            _permissionGrantManager = permissionGrantManager;
+            PermissionGrantManager = permissionGrantManager;
         }
 
         [HttpGet]
@@ -25,7 +25,7 @@ namespace AuthSystem.Controllers
         public async Task<ActionResult<List<PermissionGrantDTO>>> GetPermissionsForResourceAsync(
             [FromRoute] Guid resourceId)
         {
-            await _permissionGrantManager.DeletePermissionGrantAsync(new PermissionGrantId(Guid.NewGuid()));
+            await PermissionGrantManager.DeletePermissionGrantAsync(new PermissionGrantId(Guid.NewGuid()));
 
             throw new NotImplementedException();
         }
