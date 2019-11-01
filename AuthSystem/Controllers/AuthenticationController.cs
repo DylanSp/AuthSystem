@@ -2,6 +2,7 @@
 using AuthSystem.DTOs;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Managers;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Threading.Tasks;
@@ -42,8 +43,13 @@ namespace AuthSystem.Controllers
                 // TODO - make this duration configurable?
                 var expirationTime = DateTimeOffset.Now.AddMinutes(15);
                 var accessJwt = JwtService.CreateToken(userId.Value, expirationTime);
-                Response.Cookies.Append(Constants.ACCESS_TOKEN_COOKIE_NAME, accessJwt.Value);
-                // TODO - make cookies HttpOnly, Secure, SameSite
+                var cookieOptions = new CookieOptions
+                {
+                    HttpOnly = true,
+                    Secure = true,
+                    SameSite = SameSiteMode.Strict,
+                };
+                Response.Cookies.Append(Constants.ACCESS_TOKEN_COOKIE_NAME, accessJwt.Value, cookieOptions);
                 // TODO - construct refresh token, save refresh token, return tokens
                 return Ok();
             }
