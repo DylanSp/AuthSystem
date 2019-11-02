@@ -32,6 +32,7 @@ namespace AuthSystem
             services.AddTransient<IPermissionGrantManager, PermissionGrantManager>();
             services.AddTransient<IResourceManager, ResourceManager>();
             services.AddTransient<IUserManager, UserManager>();
+            services.AddTransient<ISessionCookieManager, SessionCookieManager>();
 
             services.AddTransient<IPasswordService>(sp =>
             {
@@ -50,6 +51,7 @@ namespace AuthSystem
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
             services.AddTransient<IResourceAdapter, PostgresResourceAdapter>();
             services.AddTransient<IUserAdapter, PostgresUserAdapter>();
+            services.AddTransient<ISessionCookieAdapter, PostgresSessionCookieAdapter>();
 
             services.AddTransient<IPostgresConnectionContext>(sp =>
             {

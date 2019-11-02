@@ -1,9 +1,11 @@
 ﻿using AuthSystem.Data;
 using AuthSystem.DTOs;
 using AuthSystem.Interfaces.Managers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Controllers
@@ -47,10 +49,13 @@ namespace AuthSystem.Controllers
             }
         }
 
+        [Authorize]
         [HttpPost]
         [Route("logout")]
         public async Task<IActionResult> LogoutAsync()
         {
+            var claims = User.Claims;
+            var claimCount = claims.Count();
             throw new NotImplementedException();
         }
     }
