@@ -1,5 +1,6 @@
 ﻿namespace AuthSystem
 {
+    // TODO - structs in .Data project should potentially overload .Equals, implement == and !=
     // TODO - rework manager methods that take UserIds to instead take usernames
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
     // TODO - logging with Serilog
