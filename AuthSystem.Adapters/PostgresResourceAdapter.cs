@@ -1,10 +1,9 @@
 ﻿using AuthSystem.Data;
+using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
-using Npgsql;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using AuthSystem.Interfaces;
 
 namespace AuthSystem.Adapters
 {
