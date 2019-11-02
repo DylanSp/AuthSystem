@@ -41,13 +41,6 @@ namespace AuthSystem
                 return new PasswordService(hashStrength);
             });
 
-            services.AddTransient<IJwtService>(sp =>
-            {
-                // TODO - load from config
-                var secret = "SuperSekrit";
-                return new JwtService(new JwtSecret(secret));
-            });
-
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
             services.AddTransient<IResourceAdapter, PostgresResourceAdapter>();
             services.AddTransient<IUserAdapter, PostgresUserAdapter>();
@@ -82,7 +75,6 @@ namespace AuthSystem
             app.UseRouting();
 
             app.UseAuthentication();
-            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
