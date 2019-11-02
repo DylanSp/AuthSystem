@@ -10,5 +10,6 @@ namespace AuthSystem.Interfaces.Adapters
     {
         Task<int> CreateSessionCookieAsync(SessionCookie cookie);
         Task<UserId?> GetUserForCookieAsync(SessionCookieId cookieId);
+        Task DeleteSessionsForUserAsync(UserId userId);
     }
 }

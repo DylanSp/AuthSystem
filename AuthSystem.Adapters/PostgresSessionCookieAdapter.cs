@@ -2,8 +2,6 @@
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace AuthSystem.Adapters
@@ -52,6 +50,18 @@ namespace AuthSystem.Adapters
                         return null;
                     }
                 }
+            }
+        }
+
+        public async Task DeleteSessionsForUserAsync(UserId userId)
+        {
+            using (var command = await ConnectionContext.CreateCommandAsync())
+            {
+                command.CommandText = @"DELETE FROM SessionCookies
+                                        WHERE UserId = @UserId";
+                command.Parameters.AddWithValue("UserId", userId.Value);
+
+                await command.ExecuteNonQueryAsync();
             }
         }
     }

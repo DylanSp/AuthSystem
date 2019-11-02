@@ -7,5 +7,6 @@ namespace AuthSystem.Interfaces.Managers
     {
         Task<SessionCookieId> CreateSessionCookieAsync(Username username);
         Task<UserId?> GetUserForSessionAsync(SessionCookieId cookieId);
+        Task DeleteSessionsForUserAsync(UserId userId);
     }
 }

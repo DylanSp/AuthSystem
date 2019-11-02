@@ -36,5 +36,10 @@ namespace AuthSystem.Managers
         {
             return await Adapter.GetUserForCookieAsync(cookieId);
         }
+
+        public async Task DeleteSessionsForUserAsync(UserId userId)
+        {
+            await Adapter.DeleteSessionsForUserAsync(userId);
+        }
     }
 }

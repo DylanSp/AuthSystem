@@ -54,9 +54,14 @@ namespace AuthSystem.Controllers
         [Route("logout")]
         public async Task<IActionResult> LogoutAsync()
         {
-            var claims = User.Claims;
-            var claimCount = claims.Count();
-            throw new NotImplementedException();
+            Guid rawUserId;
+            if (!Guid.TryParse(User.Claims.ElementAt(0).Value, out rawUserId))
+            {
+                throw new Exception("Invalid UserId in authentication claim");
+            }
+
+            await SessionCookieManager.DeleteSessionsForUserAsync(new UserId(rawUserId));
+            return Ok();
         }
     }
 }
