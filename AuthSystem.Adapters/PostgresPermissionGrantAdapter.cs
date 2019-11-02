@@ -118,6 +118,7 @@ namespace AuthSystem.Adapters
             {
                 1 => PermissionType.Read,
                 2 => PermissionType.Write,
+                3 => PermissionType.ManagePermissions,
                 _ => PermissionType.Unknown
             };
 
