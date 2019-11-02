@@ -1,7 +1,6 @@
 ﻿using AuthSystem.Controllers;
 using AuthSystem.Data;
 using AuthSystem.DTOs;
-using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -23,8 +22,7 @@ namespace AuthSystem.Tests.Controllers
             // Arrange
             var userManager = Substitute.For<IUserManager>();
             userManager.ValidatePasswordAsync(Arg.Any<Username>(), Arg.Any<PlaintextPassword>()).Returns(false);
-            userManager.GetIdForUsernameAsync(Arg.Any<Username>()).Returns(new UserId(Guid.NewGuid()));
-            var controller = new AuthenticationController(userManager, Substitute.For<IJwtService>());
+            var controller = new AuthenticationController(userManager, Substitute.For<ISessionCookieManager>());
 
             // Act
             var result = await controller.LoginAsync(new UserAuthenticationDTO());
@@ -42,14 +40,17 @@ namespace AuthSystem.Tests.Controllers
             var userId = new UserId(Guid.NewGuid());
             var userManager = Substitute.For<IUserManager>();
             userManager.ValidatePasswordAsync(Arg.Any<Username>(), Arg.Any<PlaintextPassword>()).Returns(true);
-            userManager.GetIdForUsernameAsync(username).Returns(userId);
 
-            var jwtService = Substitute.For<IJwtService>();
-            jwtService.CreateToken(userId, Arg.Any<DateTimeOffset>()).Returns(new JsonWebToken("someToken"));
+            var sessionCookieManager = Substitute.For<ISessionCookieManager>();
+            sessionCookieManager.CreateSessionCookieAsync(username).Returns(new SessionCookieId(Guid.NewGuid()));
 
-            var controller = new AuthenticationController(userManager, jwtService);
-            controller.ControllerContext = new ControllerContext();
-            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            var controller = new AuthenticationController(userManager, sessionCookieManager)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
 
             // Act
             var dto = new UserAuthenticationDTO
@@ -65,22 +66,25 @@ namespace AuthSystem.Tests.Controllers
 
         [TestMethod]
         [TestCategory("UnitTest")]
-        public async Task Login_WithCorrectPassword_ReturnsAccessTokenAsCookie()
+        public async Task Login_WithCorrectPassword_ReturnsSessionCookie()
         {
             // Arrange
             var username = new Username("Alice");
             var userId = new UserId(Guid.NewGuid());
             var userManager = Substitute.For<IUserManager>();
             userManager.ValidatePasswordAsync(Arg.Any<Username>(), Arg.Any<PlaintextPassword>()).Returns(true);
-            userManager.GetIdForUsernameAsync(username).Returns(userId);
 
-            var jwtService = Substitute.For<IJwtService>();
-            var accessToken = new JsonWebToken("someToken");
-            jwtService.CreateToken(userId, Arg.Any<DateTimeOffset>()).Returns(accessToken);
+            var sessionCookieManager = Substitute.For<ISessionCookieManager>();
+            var sessionCookieId = new SessionCookieId(Guid.NewGuid());
+            sessionCookieManager.CreateSessionCookieAsync(username).Returns(sessionCookieId);
 
-            var controller = new AuthenticationController(userManager, jwtService);
-            controller.ControllerContext = new ControllerContext();
-            controller.ControllerContext.HttpContext = new DefaultHttpContext();
+            var controller = new AuthenticationController(userManager, sessionCookieManager)
+            {
+                ControllerContext = new ControllerContext
+                {
+                    HttpContext = new DefaultHttpContext()
+                }
+            };
 
             // Act
             var dto = new UserAuthenticationDTO
@@ -92,7 +96,7 @@ namespace AuthSystem.Tests.Controllers
 
             // Assert
             Assert.IsTrue(controller.HttpContext.Response.Headers["Set-Cookie"]
-                .Any(cookieHeader => cookieHeader.Contains(accessToken.Value)));
+                .Any(cookieHeader => cookieHeader.Contains(sessionCookieId.Value.ToString())));
         }
     }
 }

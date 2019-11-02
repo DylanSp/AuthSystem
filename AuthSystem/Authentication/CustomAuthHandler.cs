@@ -1,8 +1,9 @@
 ﻿using AuthSystem.Data;
-using AuthSystem.Interfaces;
+using AuthSystem.Interfaces.Managers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
@@ -12,34 +13,31 @@ namespace AuthSystem.Authentication
 {
     internal class CustomAuthHandler : AuthenticationHandler<CustomAuthOptions>
     {
-        private IJwtService JwtService { get; }
+        private ISessionCookieManager SessionCookieManager { get; }
 
         public CustomAuthHandler(IOptionsMonitor<CustomAuthOptions> options, ILoggerFactory logger, UrlEncoder encoder,
-            ISystemClock clock, IJwtService jwtService) : base(options, logger, encoder, clock)
+            ISystemClock clock, ISessionCookieManager sessionCookieManager) : base(options, logger, encoder, clock)
         {
-            // store custom services here... (request in ctor)
-            JwtService = jwtService;
+            SessionCookieManager = sessionCookieManager;
         }
 
         protected override async Task<AuthenticateResult> HandleAuthenticateAsync()
         {
-            string jwt;
-            if (!Request.Cookies.TryGetValue(Constants.ACCESS_TOKEN_COOKIE_NAME, out jwt))
+            Guid rawSessionCookieId;
+            if (!Request.Cookies.TryGetValue(Constants.SESSION_COOKIE_NAME, out var sessionCookie)
+                || !Guid.TryParse(sessionCookie, out rawSessionCookieId))
             {
-                return AuthenticateResult.Fail("No AccessToken cookie attached");
+                return AuthenticateResult.Fail("No valid session cookie attached");
             }
 
-            var userId = JwtService.DecodeToken(new JsonWebToken(jwt));
+            var userId = await SessionCookieManager.GetUserForSessionAsync(new SessionCookieId(rawSessionCookieId));
             if (!userId.HasValue)
             {
-                return AuthenticateResult.Fail("AccessToken invalid");
+                return AuthenticateResult.Fail("Session cookie invalid");
             }
 
-            var claim = new Claim("UserId", userId.Value.Value.ToString());
-            return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { claim }, Scheme.Name)),new AuthenticationProperties(), Scheme.Name));
-            
-            // build the claims and put them in "Context"; you need to import the Microsoft.AspNetCore.Authentication package
-            // return AuthenticateResult.NoResult();
+            var claim = new Claim(Constants.USER_ID_CLAIM_NAME, userId.Value.Value.ToString());
+            return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(new ClaimsIdentity(new List<Claim> { claim }, Scheme.Name)), new AuthenticationProperties(), Scheme.Name));
         }
     }
 }

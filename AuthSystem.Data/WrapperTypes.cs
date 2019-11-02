@@ -43,6 +43,16 @@ namespace AuthSystem.Data
         }
     }
 
+    public readonly struct SessionCookieId
+    {
+        public Guid Value { get; }
+
+        public SessionCookieId(Guid value)
+        {
+            Value = value;
+        }
+    }
+
     public readonly struct ResourceValue
     {
         public string Value { get; }
