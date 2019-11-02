@@ -1,6 +1,5 @@
 using AuthSystem.Adapters;
 using AuthSystem.Authentication;
-using AuthSystem.Data;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
@@ -57,8 +56,8 @@ namespace AuthSystem
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = "Custom Scheme";
-                options.DefaultChallengeScheme = "Custom Scheme";
+                options.DefaultAuthenticateScheme = Constants.CUSTOM_AUTH_SCHEME_NAME;
+                options.DefaultChallengeScheme = Constants.CUSTOM_AUTH_SCHEME_NAME;
             }).AddCustomAuth(o => { });
         }
 

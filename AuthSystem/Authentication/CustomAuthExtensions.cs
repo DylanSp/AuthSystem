@@ -8,7 +8,7 @@ namespace AuthSystem.Authentication
         public static AuthenticationBuilder AddCustomAuth(this AuthenticationBuilder builder,
             Action<CustomAuthOptions> configureOptions)
         {
-            return builder.AddScheme<CustomAuthOptions, CustomAuthHandler>("Custom Scheme", "Custom Auth", configureOptions);
+            return builder.AddScheme<CustomAuthOptions, CustomAuthHandler>(Constants.CUSTOM_AUTH_SCHEME_NAME, Constants.CUSTOM_AUTH_SCHEME_DISPLAY_NAME, configureOptions);
         }
     }
 }
