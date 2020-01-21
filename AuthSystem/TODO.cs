@@ -1,5 +1,8 @@
-﻿namespace AuthSystem
+﻿#pragma warning disable S3261 // Namespaces should not be empty
+namespace AuthSystem
 {
+    
+#pragma warning disable S1135 // Track uses of "TODO" tags
     // TODO - structs in .Data project should potentially overload .Equals, implement == and !=
     // TODO - rework manager methods that take UserIds to instead take usernames
     // TODO - does ResourceManager need to worry about nonexistent user IDs? or is that handled by PermissionGrantManager?
@@ -13,3 +16,5 @@
     // TODO - AuthenticationController integration test - logout, then try to access protected resource fails
     // TODO - UserController integration test - create user returns header with Uri to created user's location
 }
+#pragma warning restore S3261 // Namespaces should not be empty
+#pragma warning restore S1135 // Track uses of "TODO" tags
