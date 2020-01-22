@@ -90,5 +90,25 @@ namespace AuthSystem.WebTests
             Assert.IsTrue(response.Headers.GetValues("Set-Cookie")
                 .Any(headerValue => headerValue.Contains(Constants.SESSION_COOKIE_NAME)));
         }
+
+        // TODO - doesn't pass because in-memory host is HTTP, and cookie has Secure flag set
+        [TestMethod]
+        public async Task LoginThenLogout_WithValidCredentials_ReturnsNoContent()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
+            {
+                Username = _username,
+                Password = _password,
+            });
+
+            var logoutResponse = await client.PostAsync("/v1/logout", null);
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.NoContent, logoutResponse.StatusCode);
+        }
     }
 }
