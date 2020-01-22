@@ -61,7 +61,7 @@ namespace AuthSystem.Controllers
             }
 
             await SessionCookieManager.DeleteSessionsForUserAsync(new UserId(rawUserId));
-            return Ok();
+            return NoContent();
         }
     }
 }

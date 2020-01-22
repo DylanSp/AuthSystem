@@ -19,7 +19,8 @@ namespace AuthSystem.WebTests
         [ClassInitialize]   // run once before all tests
         public static async Task Setup(TestContext context)
         {
-            _factory = new WebApplicationFactory<Startup>();
+            _factory = new WebApplicationFactory<Startup>()
+                .WithWebHostBuilder(builder => builder.UseSetting("https_port", "443"));    // need this setting for HTTPS, so Secure cookies work
 
             // initialize user
             _username = Guid.NewGuid().ToString();
@@ -91,7 +92,6 @@ namespace AuthSystem.WebTests
                 .Any(headerValue => headerValue.Contains(Constants.SESSION_COOKIE_NAME)));
         }
 
-        // TODO - doesn't pass because in-memory host is HTTP, and cookie has Secure flag set
         [TestMethod]
         public async Task LoginThenLogout_WithValidCredentials_ReturnsNoContent()
         {
