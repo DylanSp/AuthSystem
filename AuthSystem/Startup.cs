@@ -36,7 +36,7 @@ namespace AuthSystem
             services.AddTransient<IPasswordService>(sp =>
             {
                 // TODO - load from config
-                var hashStrength = PasswordHash.StrengthArgon.Sensitive;
+                var hashStrength = PasswordHash.StrengthArgon.Interactive;
                 return new PasswordService(hashStrength);
             });
 
@@ -74,6 +74,7 @@ namespace AuthSystem
             app.UseRouting();
 
             app.UseAuthentication();
+            app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
             {
