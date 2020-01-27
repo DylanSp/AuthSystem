@@ -1,11 +1,11 @@
+using AuthSystem.DTOs;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using AuthSystem.DTOs;
-using Microsoft.AspNetCore.Mvc.Testing;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace AuthSystem.WebTests
 {
@@ -109,6 +109,33 @@ namespace AuthSystem.WebTests
 
             // Assert
             Assert.AreEqual(HttpStatusCode.NoContent, logoutResponse.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task Logout_WithNoSessionCookie_ReturnsUnauthorized()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            var logoutResponse = await client.PostAsync("/v1/logout", null);
+            
+            // Assert
+            Assert.AreEqual(HttpStatusCode.Unauthorized, logoutResponse.StatusCode);
+        }
+
+        [TestMethod]
+        public async Task Logout_WithInvalidSessionCookie_ReturnsUnauthorized()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+            client.DefaultRequestHeaders.Add("Cookie", $"SessionCookie={Guid.NewGuid()}; path=/; domain=localhost; Secure; HttpOnly;"); 
+
+            // Act
+            var logoutResponse = await client.PostAsync("/v1/logout", null);
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.Unauthorized, logoutResponse.StatusCode);
         }
     }
 }
