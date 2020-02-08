@@ -31,6 +31,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Save_ThenReadById_RoundTrips()
         {
             // Arrange
@@ -49,6 +50,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Update_ThenRead_ReturnsUpdatedData()
         {
             // Arrange
@@ -69,6 +71,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Update_OfOneResource_ReturnsOne()
         {
             // Arrange
@@ -87,6 +90,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task GetAllResources_WithMultipleResources_ReturnsAll()
         {
             // Arrange

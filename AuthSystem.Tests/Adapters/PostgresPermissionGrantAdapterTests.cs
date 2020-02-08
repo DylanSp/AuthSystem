@@ -31,6 +31,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task CreateGrant_ThenCheckForThatGrant_ReturnsTrue()
         {
             // Arrange
@@ -56,6 +57,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task DeleteGrant_ThenCheckForThatGrant_ReturnsFalse()
         {
             // Arrange
@@ -85,6 +87,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task GetAllPermissionsForUser_WithMultipleGrants_ReturnsAll()
         {
             // Arrange
@@ -114,6 +117,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task GetAllPermissionsForResource_WithMultipleGrants_ReturnsAll()
         {
             // Arrange

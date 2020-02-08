@@ -15,6 +15,7 @@ namespace AuthSystem.Tests.Managers
     public class PermissionGrantManagerTests
     {
         [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task GetAllPermissionsForResource_ForUserWithoutPermissionManagementPermissions_ReturnsEmptyList()
         {
             // Arrange
@@ -37,6 +38,7 @@ namespace AuthSystem.Tests.Managers
         }
 
         [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task GetAllPermissionsForResource_ForUserWithPermissionManagementPermissions_ReturnsListWithGrants()
         {
             // Arrange

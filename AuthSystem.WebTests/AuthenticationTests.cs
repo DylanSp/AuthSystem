@@ -35,6 +35,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Login_WithValidCredentials_ReturnsOk()
         {
             // Arrange
@@ -52,6 +54,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
         {
             // Arrange
@@ -69,6 +73,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Login_WithValidCredentials_SetsSessionCookie()
         {
             // Arrange
@@ -88,6 +94,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task LoginThenLogout_WithValidCredentials_ReturnsNoContent()
         {
             // Arrange
@@ -107,6 +115,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Logout_WithNoSessionCookie_ReturnsUnauthorized()
         {
             // Arrange
@@ -120,6 +130,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Logout_WithInvalidSessionCookie_ReturnsUnauthorized()
         {
             // Arrange
@@ -134,6 +146,8 @@ namespace AuthSystem.WebTests
         }
 
         [TestMethod]
+        [TestCategory("IntegrationTest")]
+        [TestCategory("WebTest")]
         public async Task Logout_WithValidSessionCookie_ClearsServerSessionState()
         {
             // Arrange
