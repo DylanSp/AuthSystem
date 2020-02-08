@@ -137,5 +137,26 @@ namespace AuthSystem.WebTests
             // Assert
             Assert.AreEqual(HttpStatusCode.Unauthorized, logoutResponse.StatusCode);
         }
+
+        [TestMethod]
+        public async Task Logout_WithValidSessionCookie_ClearsServerSessionState()
+        {
+            // Arrange
+            var client = _factory.CreateClient();
+
+            // Act
+            await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
+            {
+                Username = _username,
+                Password = _password,
+            });
+
+            await client.PostAsync("/v1/logout", null);
+
+            var secondLogoutResponse = await client.PostAsync("/v1/logout", null);
+
+            // Assert
+            Assert.AreEqual(HttpStatusCode.Unauthorized, secondLogoutResponse.StatusCode);
+        }
     }
 }
