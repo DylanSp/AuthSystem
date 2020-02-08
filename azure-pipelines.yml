@@ -42,12 +42,12 @@ steps:
   displayName: Database Integration Tests
   inputs:
     command: test
-    projects: **/*.csproj'
+    projects: '**/*.csproj'
     arguments: '--filter TestCategory=IntegrationTest&TestCategory=DbTest'
 
 - task: DotNetCoreCLI@2
   displayName: Web Integration Tests
   inputs:
     command: test
-    projects: **/*.csproj'
+    projects: '**/*.csproj'
     arguments: '--filter TestCategory=IntegrationTest&TestCategory=WebTest'
