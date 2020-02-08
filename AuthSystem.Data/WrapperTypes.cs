@@ -33,11 +33,11 @@ namespace AuthSystem.Data
         }
     }
 
-    public readonly struct RefreshTokenId
+    public readonly struct SessionCookieId
     {
         public Guid Value { get; }
 
-        public RefreshTokenId(Guid value)
+        public SessionCookieId(Guid value)
         {
             Value = value;
         }
@@ -78,26 +78,6 @@ namespace AuthSystem.Data
         public string Value { get; }
 
         public SaltedHashedPassword(string value)
-        {
-            Value = value;
-        }
-    }
-
-    public readonly struct JsonWebToken
-    {
-        public string Value { get; }
-
-        public JsonWebToken(string value)
-        {
-            Value = value;
-        }
-    }
-
-    public readonly struct JwtSecret
-    {
-        public string Value { get; }
-
-        public JwtSecret(string value)
         {
             Value = value;
         }

@@ -1,6 +1,5 @@
 using AuthSystem.Adapters;
 using AuthSystem.Authentication;
-using AuthSystem.Data;
 using AuthSystem.Interfaces;
 using AuthSystem.Interfaces.Adapters;
 using AuthSystem.Interfaces.Managers;
@@ -32,24 +31,19 @@ namespace AuthSystem
             services.AddTransient<IPermissionGrantManager, PermissionGrantManager>();
             services.AddTransient<IResourceManager, ResourceManager>();
             services.AddTransient<IUserManager, UserManager>();
+            services.AddTransient<ISessionCookieManager, SessionCookieManager>();
 
             services.AddTransient<IPasswordService>(sp =>
             {
                 // TODO - load from config
-                var hashStrength = PasswordHash.StrengthArgon.Sensitive;
+                var hashStrength = PasswordHash.StrengthArgon.Interactive;
                 return new PasswordService(hashStrength);
-            });
-
-            services.AddTransient<IJwtService>(sp =>
-            {
-                // TODO - load from config
-                var secret = "SuperSekrit";
-                return new JwtService(new JwtSecret(secret));
             });
 
             services.AddTransient<IPermissionGrantAdapter, PostgresPermissionGrantAdapter>();
             services.AddTransient<IResourceAdapter, PostgresResourceAdapter>();
             services.AddTransient<IUserAdapter, PostgresUserAdapter>();
+            services.AddTransient<ISessionCookieAdapter, PostgresSessionCookieAdapter>();
 
             services.AddTransient<IPostgresConnectionContext>(sp =>
             {
@@ -62,8 +56,8 @@ namespace AuthSystem
 
             services.AddAuthentication(options =>
             {
-                options.DefaultAuthenticateScheme = "Custom Scheme";
-                options.DefaultChallengeScheme = "Custom Scheme";
+                options.DefaultAuthenticateScheme = Constants.CUSTOM_AUTH_SCHEME_NAME;
+                options.DefaultChallengeScheme = Constants.CUSTOM_AUTH_SCHEME_NAME;
             }).AddCustomAuth(o => { });
         }
 
