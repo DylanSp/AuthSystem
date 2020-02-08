@@ -1,5 +1,4 @@
 using AuthSystem.DTOs;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Linq;
@@ -12,21 +11,17 @@ namespace AuthSystem.WebTests
     [TestClass]
     public class AuthenticationTests
     {
-        private static WebApplicationFactory<Startup> _factory;
         private static string _username;
         private static string _password;
 
         [ClassInitialize]   // run once before all tests
         public static async Task Setup(TestContext context)
         {
-            _factory = new WebApplicationFactory<Startup>()
-                .WithWebHostBuilder(builder => builder.UseSetting("https_port", "443"));    // need this setting for HTTPS, so Secure cookies work
-
             // initialize user
             _username = Guid.NewGuid().ToString();
             _password = Guid.NewGuid().ToString();
 
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
             var userCreationResponse = await client.PostAsJsonAsync("/v1/users", new UserAuthenticationDTO
             {
                 Username = _username,
@@ -43,7 +38,7 @@ namespace AuthSystem.WebTests
         public async Task Login_WithValidCredentials_ReturnsOk()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act 
             var response = await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
@@ -60,7 +55,7 @@ namespace AuthSystem.WebTests
         public async Task Login_WithInvalidCredentials_ReturnsUnauthorized()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act
             var response = await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
@@ -77,7 +72,7 @@ namespace AuthSystem.WebTests
         public async Task Login_WithValidCredentials_SetsSessionCookie()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act
             var response = await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
@@ -96,7 +91,7 @@ namespace AuthSystem.WebTests
         public async Task LoginThenLogout_WithValidCredentials_ReturnsNoContent()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act
             await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
@@ -115,7 +110,7 @@ namespace AuthSystem.WebTests
         public async Task Logout_WithNoSessionCookie_ReturnsUnauthorized()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act
             var logoutResponse = await client.PostAsync("/v1/logout", null);
@@ -128,7 +123,7 @@ namespace AuthSystem.WebTests
         public async Task Logout_WithInvalidSessionCookie_ReturnsUnauthorized()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
             client.DefaultRequestHeaders.Add("Cookie", $"SessionCookie={Guid.NewGuid()}; path=/; domain=localhost; Secure; HttpOnly;"); 
 
             // Act
@@ -142,7 +137,7 @@ namespace AuthSystem.WebTests
         public async Task Logout_WithValidSessionCookie_ClearsServerSessionState()
         {
             // Arrange
-            var client = _factory.CreateClient();
+            var client = ProjectSetup.Factory.CreateClient();
 
             // Act
             await client.PostAsJsonAsync("/v1/login", new UserAuthenticationDTO
