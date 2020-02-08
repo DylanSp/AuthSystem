@@ -30,6 +30,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Save_ThenReadById_RoundTrips()
         {
             // Arrange
@@ -47,6 +48,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Save_ThenReadByName_RoundTrips()
         {
             // Arrange
@@ -64,6 +66,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Update_ThenRead_ReturnsUpdatedData()
         {
             // Arrange
@@ -84,6 +87,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task Update_OfOneUser_ReturnsOne()
         {
             // Arrange
@@ -102,6 +106,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task CreateUser_WithNewUsername_ReturnsOne()
         {
             // Arrange
@@ -117,6 +122,7 @@ namespace AuthSystem.Tests.Adapters
 
         [TestMethod]
         [TestCategory("IntegrationTest")]
+        [TestCategory("DbTest")]
         public async Task CreateUser_WithExistingUsername_ReturnsZero()
         {
             // Arrange

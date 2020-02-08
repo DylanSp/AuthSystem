@@ -38,6 +38,7 @@ namespace AuthSystem.Tests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task CreateUser_WithNewUsername_EchoesAuthenticationDetails()
         {
             // Arrange
@@ -60,6 +61,7 @@ namespace AuthSystem.Tests.Controllers
         }
 
         [TestMethod]
+        [TestCategory("UnitTest")]
         public async Task CreateUser_WithDuplicateUsername_ReturnsBadRequest()
         {
             // Arrange
